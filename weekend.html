@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Higher D&amp;M: test weekend</title>
+<meta name="description" content="Focused revision weekend for the Higher Design and Manufacture class test">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f2; --surface:#ffffff; --surface-2:#efede8; --ink:#1c1d1f; --ink-2:#4a4d52; --muted:#6f737a; --line:#dcd9d2;
+  --accent:#2f5d8a; --accent-2:#1d3c5c; --accent-soft:#dfe8f1; --on-accent:#ffffff;
+  --good:#1f7a4a; --good-soft:#dcf1e4; --bad:#b3372c; --bad-soft:#f8e0dc; --warn:#8a5a00; --warn-soft:#fbefd4;
+  --mark:#fff1b8; --shadow:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.04);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131416; --surface:#1c1e21; --surface-2:#25282c; --ink:#ecedef; --ink-2:#c3c6cb; --muted:#9398a0; --line:#34383d;
+    --accent:#7fb0e0; --accent-2:#a9cbee; --accent-soft:#223549; --on-accent:#0d1620;
+    --good:#6fd39c; --good-soft:#173726; --bad:#f2968b; --bad-soft:#3e1d1a; --warn:#f0c46b; --warn-soft:#3a2d12;
+    --mark:#4a4020; --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131416; --surface:#1c1e21; --surface-2:#25282c; --ink:#ecedef; --ink-2:#c3c6cb; --muted:#9398a0; --line:#34383d;
+  --accent:#7fb0e0; --accent-2:#a9cbee; --accent-soft:#223549; --on-accent:#0d1620;
+  --good:#6fd39c; --good-soft:#173726; --bad:#f2968b; --bad-soft:#3e1d1a; --warn:#f0c46b; --warn-soft:#3a2d12;
+  --mark:#4a4020; --shadow:none; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;overflow-x:hidden;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 0}
+.brand{font-weight:700;font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand a{color:inherit;text-decoration:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 10px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.chip b{color:var(--ink)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn svg{width:18px;height:18px}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{background:none;border:0;padding:8px 2px 9px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-width:0;position:relative}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:var(--accent)}
+nav.tabs .badge{position:absolute;left:calc(50% + 8px);top:4px;background:var(--bad);color:#fff;border-radius:999px;font-size:10px;padding:0 5px;line-height:16px}
+main{padding:16px 0 24px}
+h1{font-size:22px;line-height:1.25;margin:4px 0 6px}
+h2{font-size:18px;margin:22px 0 8px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:6px 0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;box-shadow:var(--shadow)}
+.card ul{margin:6px 0;padding-left:20px} .card li{margin:4px 0}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--ink-2)}
+.tag.mm{background:var(--warn-soft);color:var(--warn)}
+.tag.design{background:var(--accent-soft);color:var(--accent-2)}
+.tag.impact{background:var(--good-soft);color:var(--good)}
+.tag.paper{background:var(--bad-soft);color:var(--bad)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:10px 14px;font-weight:600;cursor:pointer;min-height:44px;text-align:center;text-decoration:none;color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.btn{flex:1 1 140px}
+.stagebar{display:grid;gap:4px;margin:10px 0 4px}
+.stagebar button{border:0;background:none;padding:0;cursor:pointer;text-align:left;min-width:0}
+.stagebar .bar{height:6px;border-radius:4px;background:var(--line)}
+.stagebar .on .bar{background:var(--accent)} .stagebar .cur .bar{background:var(--accent-2)}
+.stagebar .lbl{font-size:11px;color:var(--muted);margin-top:4px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stagebar .cur .lbl{color:var(--ink);font-weight:600}
+.q{font-weight:600}
+.opts{display:grid;gap:8px;margin-top:10px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer;min-height:44px;line-height:1.4}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.why{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:14px}
+.why b.ok{color:var(--good)} .why b.no{color:var(--bad)}
+textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;resize:vertical;margin-top:10px}
+.scheme{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.scheme h4{margin:10px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.box{border-radius:10px;padding:10px 12px;margin:6px 0;font-size:15px}
+.box.full{background:var(--good-soft)} .box.weak{background:var(--bad-soft)} .box.rule{background:var(--warn-soft)}
+.marks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.marks button{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:700;cursor:pointer}
+.marks button.sel{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.mk{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--surface-2);color:var(--ink-2);margin-left:6px;vertical-align:1px}
+.model .seg.earn{background:var(--mark);border-radius:3px;padding:0 2px}
+.model .note{display:inline-block;font-size:12px;font-weight:600;color:var(--good);background:var(--good-soft);border-radius:6px;padding:0 6px;margin:0 2px}
+.fig{margin:10px 0;color:var(--ink)} .fig svg{width:100%;height:auto;display:block} .fig figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.daylabel{margin:22px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.daylist{display:grid;gap:8px}
+.dayrow{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;width:100%}
+.dayrow .n{font-weight:700;font-size:18px;text-align:center;color:var(--muted)}
+.dayrow.done .n{color:var(--good)} .dayrow.next{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.dayrow .t{font-weight:600;line-height:1.3;min-width:0}
+.dayrow .s{font-size:12px;color:var(--muted);font-weight:400}
+.dayrow .r{font-size:13px;color:var(--ink-2);text-align:right;white-space:nowrap}
+.alert{border-radius:12px;padding:10px 14px;margin:12px 0;background:var(--warn-soft);color:var(--ink)}
+.alert.good{background:var(--good-soft)}
+.alert.info{background:var(--accent-soft)}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat .card{margin:0;text-align:center;padding:12px 6px}
+.stat .v{font-size:24px;font-weight:700}
+.stat .l{font-size:12px;color:var(--muted)}
+.bars{display:grid;gap:8px;margin-top:6px}
+.bars .b{display:grid;grid-template-columns:minmax(0,1fr) 60px;gap:8px;align-items:center;font-size:14px}
+.bars .lab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars .track{grid-column:1/-1;height:10px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-top:-4px}
+.bars .fill{height:100%;background:var(--accent);border-radius:0 4px 4px 0}
+.bars .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.check{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.check input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--accent)}
+.grade{font-size:36px;font-weight:800;color:var(--accent)}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.sec{margin:22px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:18px;max-width:min(420px,calc(100vw - 32px));width:100%}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+label.f{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+input[type=date],select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);min-height:44px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{padding:6px 4px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+table.t th{font-size:12px;color:var(--muted);font-weight:600;border-top:0}
+table.t td:first-child{font-weight:600}
+table.t.num td{font-variant-numeric:tabular-nums}
+.qfscore{font-size:28px;font-weight:800}
+.flip{perspective:1000px;margin:14px 0}
+.flip .in{position:relative;height:230px;transition:transform .45s;transform-style:preserve-3d;cursor:pointer}
+.flip.on .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px;box-shadow:var(--shadow)}
+.face.back{transform:rotateY(180deg);background:var(--accent-soft)}
+.face .emo{font-size:56px;line-height:1}
+.face .big{font-size:20px;font-weight:700;margin-top:12px;line-height:1.3}
+.face .sub{font-size:15px;color:var(--ink-2);margin-top:8px}
+.hint{font-size:12px;color:var(--muted);margin-top:12px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.match .col{display:grid;gap:8px;align-content:start}
+.tile{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 8px;min-height:68px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;line-height:1.3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.tile .te{font-size:22px}
+.tile.sel{border-color:var(--accent);background:var(--accent-soft)}
+.tile.ok{border-color:var(--good);background:var(--good-soft);opacity:.5;cursor:default}
+.tile.bad{border-color:var(--bad);background:var(--bad-soft);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.answer{background:var(--surface-2);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;margin:10px 0;font-size:15px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.pill{background:var(--warn-soft);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.confetti{position:fixed;top:-40px;font-size:26px;z-index:20;pointer-events:none;animation:fall 1.7s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.3}}
+.stars{color:#e0a100;letter-spacing:1px;font-size:14px}
+details.cheat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px;margin:16px 0}
+details.cheat summary{cursor:pointer;font-weight:600;padding:14px 0}
+details.cheat .card{box-shadow:none}
+.bigstat{display:flex;justify-content:space-around;text-align:center;margin:8px 0}
+.bigstat b{display:block;font-size:26px}
+
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="topbar">
+    <div class="brand">Higher D&amp;M · test weekend</div>
+    <button class="iconbtn" id="themeBtn" aria-label="Change theme" title="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button>
+    <button class="iconbtn" id="setBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  </div>
+  <div class="chips" id="chips"></div>
+</div></header>
+<main class="wrap" id="main"></main>
+<nav class="tabs" aria-label="Sections"><div class="in" id="tabs"></div></nav>
+<dialog id="settings"></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================================================================== CONTENT
+// MCQs: the correct option is always written FIRST; the app shuffles the display order.
+const MC = (q, o, why) => ({ t: 'mcq', q, o, why });
+const PK = (q, o, why) => ({ t: 'mcq', pick: true, q, o, why });
+const EX = (x) => Object.assign({ t: 'ext' }, x);
+
+const TEACHER_TOPICS = ['Material recognition', 'Manufacturing process recognition', 'Ergonomics', 'Aesthetics', 'The environment'];
+
+const SESSIONS = [];
+
+// --------------------------------------------------------------------- 1 MATERIALS
+SESSIONS.push({
+  id: 'mat', n: 1, when: 'Saturday', slot: '12:30–13:45', mins: 75, area: 'mm',
+  title: 'Material recognition',
+  goal: 'Name the exact material for any part from a photo or description, give a property with its consequence for that product, and describe how to identify a material by testing.',
+  learn: [
+    { h: 'How material questions earn marks', p: [
+      '<b>Be specific.</b> “Polypropylene”, not “plastic”. “Mild steel”, not “metal”. “Beech”, not “wood”.',
+      '<b>Property → consequence for this product.</b> The 2026 marking instructions (MI): “no marks awarded for simply stating properties”. <i>ABS is tough</i> = 0. <i>ABS is tough, so the controller casing will not crack if dropped</i> = 1.',
+      '<b>The consequence must be real.</b> The MI gave 0 for “ABS is impact resistant as it can withstand being picked up and put down”, because being picked up does not need impact resistance.',
+      '<b>Six marks need six different points.</b> Spread them across both products and several parts. Repeating the same property for a second part earns nothing.'
+    ]},
+    { h: 'Thermoplastics: soften when heated, can be reshaped and recycled', p: [
+      '<b>ABS</b>: tough, impact and scratch resistant, glossy, any colour. Casings for electrical products, games controllers, toys.',
+      '<b>Acrylic</b>: transparent, excellent optical clarity, hard, polishes well, weather resistant, but brittle (can shatter). Lenses, light diffusers, display cases, signs.',
+      '<b>Nylon</b>: tough, hard-wearing, low friction (self-lubricating). Gears, bearings, zips, cable ties.',
+      '<b>Polypropylene (PP)</b>: lightweight, tough, food safe, chemical resistant, fatigue resistant, so it forms a <i>living hinge</i>. Flip-top lids, food containers, stacking chairs.',
+      '<b>Polystyrene</b>: rigid, light, cheap. Expanded (EPS) insulates and absorbs shock. Packaging, disposable cups, vacuum-formed trays.',
+      '<b>Polythene</b>: LDPE is flexible (squeezy bottles, carrier bags). HDPE is stiffer and tough (milk bottles, bins, water tanks).',
+      '<b>PVC</b>: durable, weather resistant, good electrical insulator, rigid or flexible. Window frames, drainpipes, cable insulation.'
+    ]},
+    { h: 'Thermosets, elastomers and composites', p: [
+      '<b>Thermosets</b> set by a chemical change (cross-links) and cannot be softened again: rigid, heat resistant, good insulators.',
+      '<b>Urea formaldehyde (UF)</b>: hard, rigid, excellent electrical insulator. Plugs, sockets, switches.',
+      '<b>Melamine formaldehyde (MF)</b>: hard, scratch, heat and stain resistant, food safe. Tableware, laminate worktop surfaces.',
+      '<b>Elastomers</b> (rubber, silicone) stretch or compress and return to shape: grips, seals, tyres, non-slip feet.',
+      '<b>Carbon-fibre plastics</b>: very high strength-to-weight ratio, stiff, expensive. Racing bikes, rackets. <b>GRP</b>: strong, light, will not rot or corrode, large one-piece forms. Boat hulls, canoes.',
+      'For composites the MI want an <b>enhanced property or a comparison to non-composite materials</b> (e.g. “lighter than a steel frame of the same strength”).'
+    ]},
+    { h: 'Metals', p: [
+      '<b>Ferrous</b> (contain iron; most are magnetic; rust unless protected):',
+      '<b>Mild steel</b>: tough, ductile, easily welded, cheap, but rusts, so it needs a finish (chrome plating, galvanising, dip coating). Frames, car bodies.',
+      '<b>Stainless steel</b>: corrosion resistant, hard, hygienic, attractive. Cutlery, sinks, kettles.',
+      '<b>Cast iron</b>: hard, brittle, strong in compression, casts well, heavy. Vice bodies, machine bases, manhole covers, cookware.',
+      '<b>High-speed steel (HSS)</b>: stays hard at high temperatures. Drill bits, lathe tools.',
+      '<b>Non-ferrous</b>: <b>Aluminium</b>: lightweight, corrosion resistant, extrudes and die casts well (window frames, bike frames, cans). <b>Copper</b>: excellent conductor of electricity and heat (wiring, pipes). <b>Brass</b> (copper + zinc): gold colour, corrosion resistant, casts and machines well (door handles, plumbing fittings). <b>Zinc</b>: galvanising, die-cast toys and handles. <b>Tin</b>: coating food cans, solder.'
+    ]},
+    { h: 'Woods and manufactured boards', p: [
+      '<b>Oak</b>: strong, hard, durable, strong grain with silvery flecks; contains tannic acid, which corrodes steel fixings. Furniture, flooring, outdoor benches.',
+      '<b>Beech</b>: hard, fine even grain, no taste or smell. Toys, kitchen utensils, chair frames.',
+      '<b>Ash</b>: tough, flexible, shock resistant, steam bends. Tool handles, sports equipment.',
+      '<b>Mahogany</b>: reddish-brown, stable, durable. Quality furniture, veneers.',
+      '<b>Pine / spruce</b> (softwoods): light, cheap, fast growing; pine has knots. Construction, budget furniture.',
+      '<b>Plywood</b>: veneers with grain at 90°, strong in all directions; layered edge. <b>MDF</b>: smooth, stable, routes cleanly, paints well. <b>Chipboard</b>: cheap, usually melamine faced; crumbly edges, poor screw holding. <b>Hardboard</b>: one smooth face; drawer bases, cabinet backs. <b>Blockboard</b>: stiff panels, shelving. <b>Flexiply</b>: bends to curves.'
+    ]},
+    { h: 'Recognition clues: what you can see in a photo', table: [
+      ['You see…', 'It is probably…'],
+      ['Clear, rigid, polished edges', 'Acrylic'],
+      ['A thin strip that flexes as a hinge', 'Polypropylene'],
+      ['Glossy, tough casing on an electrical product', 'ABS'],
+      ['Squeezy bottle', 'LDPE'],
+      ['Plug, socket or switch plate', 'Urea formaldehyde'],
+      ['Hard, decorated picnic plates', 'Melamine formaldehyde'],
+      ['Woven pattern under a glossy surface', 'Carbon fibre (or GRP)'],
+      ['Dull grey crystalline “spangle” on steel', 'Galvanised mild steel'],
+      ['Mirror finish on a handle or tap', 'Chrome-plated steel, zinc or ABS'],
+      ['Gold-coloured metal fitting', 'Brass'],
+      ['Orange-brown wire or pipe', 'Copper'],
+      ['Strong grain with flecks, outdoor bench', 'Oak'],
+      ['Pale, fine, even grain on a toy', 'Beech'],
+      ['Layered edge', 'Plywood'],
+      ['Smooth fibrous edge, painted', 'MDF'],
+      ['Chips visible at the edge, plastic laminate face', 'Melamine-faced chipboard']
+    ]},
+    { h: 'Identifying materials by testing (2025 Q6(a): answered poorly)', p: [
+      'The 2025 course report: most candidates “gave methods of identification with limited or no explanation”. <b>Name the material type, the test, and what the result tells you.</b>',
+      '<b>Magnet (metals)</b>: mild steel is attracted (ferrous); aluminium, brass and copper are not.',
+      '<b>Colour (metals and woods)</b>: copper is orange-brown, brass yellow-gold; mahogany is reddish, oak pale brown.',
+      '<b>Grain (woods)</b>: oak has a strong, open grain; beech is fine and even with small flecks.',
+      '<b>Float test (plastics)</b>: polypropylene and polythene float, because they are less dense than water; ABS and acrylic sink.',
+      '<b>Flame test (plastics)</b>: only if you say what you observe, e.g. polythene drips and smells like candle wax.',
+      '<b>Weight comparison</b>: aluminium feels much lighter than steel of the same size.'
+    ]}
+  ],
+  model: {
+    q: 'Explain why the materials are suitable for a child’s high chair with a beech frame and a polypropylene tray. (4 marks)', max: 4,
+    parts: [
+      ['Beech is hard and tough, so the frame legs will not dent or break when the chair is knocked about.', 'property + consequence'],
+      [' It has a fine, close grain that sands smooth, so there are no splinters to hurt the child.', 'property + consequence'],
+      [' Polypropylene is food safe, so food can be put directly on the tray.', 'property + consequence'],
+      [' It is also chemical resistant and does not absorb liquid, so it can be washed with detergent after every meal without staining.', 'property + consequence']
+    ]
+  },
+  spot: [
+    MC('A clear, rigid display case for a model car with polished edges. Material?', ['Acrylic', 'Polystyrene', 'Polypropylene', 'PVC'], 'Transparent, hard and polishes to a high gloss: acrylic.'),
+    MC('A flip-top lid on a shampoo bottle, with a thin hinge that is opened thousands of times. Material?', ['Polypropylene', 'Acrylic', 'Melamine formaldehyde', 'ABS'], 'Polypropylene’s fatigue resistance lets a thin section flex repeatedly: a living hinge.'),
+    MC('An electrical wall socket faceplate. Material?', ['Urea formaldehyde', 'Polythene', 'Acrylic', 'Nylon'], 'A thermoset: rigid, heat resistant and an excellent electrical insulator. It will not soften if the socket warms up.'),
+    MC('Small quiet gears inside a food mixer. Material?', ['Nylon', 'Acrylic', 'Polystyrene', 'PVC'], 'Nylon is tough, hard-wearing and self-lubricating, so the gears run quietly with little wear.'),
+    MC('A garden bench with heavy, decorative grey ends that are strong in compression. Material for the ends?', ['Cast iron', 'Stainless steel', 'Aluminium', 'Copper'], 'Cast iron casts into complex shapes, is strong in compression and heavy, so the bench is stable.'),
+    MC('A drill bit that must stay hard when it gets hot from cutting. Material?', ['High-speed steel', 'Mild steel', 'Cast iron', 'Brass'], 'HSS keeps its hardness at high temperatures.'),
+    MC('A kitchen sink. Material?', ['Stainless steel', 'Mild steel', 'Cast iron', 'Copper'], 'Stainless steel is corrosion resistant and hygienic. Mild steel would rust.'),
+    MC('A gold-coloured door handle that does not tarnish badly. Material?', ['Brass', 'Copper', 'Aluminium', 'Zinc'], 'Brass is gold coloured, corrosion resistant and casts and machines well.'),
+    MC('A child’s wooden building block with a pale, fine, even grain. Wood?', ['Beech', 'Oak', 'Mahogany', 'Pine'], 'Beech: hard, fine close grain, no taste or smell, so it is safe for toys.'),
+    MC('The handle of a garden spade, which must absorb shock. Wood?', ['Ash', 'Mahogany', 'Pine', 'Beech'], 'Ash is tough, flexible and shock resistant.'),
+    MC('A canoe hull: large, one piece, will not rot or rust. Material?', ['Glass-reinforced plastic (GRP)', 'Acrylic', 'Oak', 'Mild steel'], 'GRP is strong, light and can be moulded as a large one-piece form that does not rot or corrode.'),
+    MC('A painted, CNC-routed flat-pack drawer front with smooth edges. Board?', ['MDF', 'Chipboard', 'Hardboard', 'Blockboard'], 'MDF routes cleanly with smooth edges and paints well. Chipboard edges crumble.'),
+    MC('A milk bottle that is stiff enough to hold its shape. Material?', ['HDPE (high-density polythene)', 'LDPE', 'Acrylic', 'Melamine formaldehyde'], 'HDPE is stiffer and tougher than LDPE, food safe and blow mouldable.'),
+    MC('Steel fence posts with a dull, crystalline “spangled” surface. What are they?', ['Galvanised mild steel', 'Stainless steel', 'Chrome-plated steel', 'Aluminium'], 'Spangle is the identifying feature of a galvanised (zinc-coated) finish on mild steel.'),
+    MC('How could you tell an aluminium rod from a mild-steel rod of the same size?', ['A magnet sticks to the mild steel but not the aluminium', 'Aluminium is magnetic', 'Mild steel floats in water', 'They look identical, so you cannot'], 'Mild steel is ferrous, so a magnet is attracted. Aluminium is non-ferrous and much lighter.'),
+    PK('Which answer earns the mark for “describe a method of identifying a material”?', [
+      'Put a piece of the plastic in water: polypropylene floats because it is less dense than water, so it can be told apart from ABS, which sinks.',
+      'Do a float test.',
+      'A float test is when a material is put in liquid to see the weight or density of it.',
+      'Look at it carefully.'
+    ], 'The 2026 MI gave 0 for “put in liquid to see the weight or density”. You must name the material and say what the test shows.')
+  ],
+  exam: [
+    EX({ q: 'Explain why polypropylene is a suitable material for the flip-top lid of a shampoo bottle.', max: 2,
+      scheme: ['Fatigue resistant, so the thin hinge can be opened and closed many times without breaking (living hinge).', 'Chemical resistant, so the shampoo does not attack it.', 'Lightweight and cheap, suits mass-produced packaging.', 'Can be injection moulded with the hinge in one piece, so there is no separate hinge to assemble.', 'Any other valid explanation.'],
+      rules: ['1 mark per valid explanation linked to the lid.', 'A property on its own earns 0.'],
+      model: 'Polypropylene is fatigue resistant, so the thin hinge can be opened and closed thousands of times without snapping (1). It is also chemical resistant, so it will not be damaged by the detergents in the shampoo (1).',
+      weak: 'Polypropylene is flexible and cheap.',
+      weakWhy: '0 marks. Two properties, neither linked to what they do for the lid.' }),
+    EX({ q: 'Describe methods, other than symbols and labels, that could be used to identify woods, metals and plastics.', max: 3,
+      scheme: ['Magnet test on metals: ferrous attracted, non-ferrous not.', 'Colour of metals (copper, brass) or woods (mahogany, oak).', 'Grain pattern of woods compared with known samples.', 'Float test on plastics, with reference to density.', 'Flame test with the observed changes described.', 'Weight comparison with known samples.'],
+      rules: ['1 mark per method described with the material type and the information gained.', '0 marks for naming a method only.'],
+      model: 'Hold a magnet against the metal: if it is attracted the metal is ferrous, such as mild steel; if not, it is non-ferrous, such as aluminium (1). Compare the grain of a wood with known samples: oak has a strong open grain with flecks, while beech is fine and even (1). Drop a small piece of plastic in water: polypropylene floats because it is less dense than water, whereas acrylic sinks (1).',
+      weak: 'Magnet test, float test and look at the colour.',
+      weakWhy: '0 marks. Three method names, no material linked and no result described. This is exactly what the 2025 report criticised.' }),
+    EX({ q: 'Explain why stainless steel, rather than mild steel, is used for a kitchen sink.', max: 3,
+      scheme: ['Corrosion resistant, so it will not rust despite constant contact with water; mild steel would rust.', 'Hygienic, easy to clean, so bacteria do not build up.', 'Hard and scratch resistant, so it keeps its appearance with pans and cutlery.', 'Attractive finish without needing a coating; mild steel would need a finish that could chip.'],
+      rules: ['1 mark per valid explanation.', 'Maximum 2 marks if there is no comparison with mild steel.'],
+      model: 'Stainless steel does not rust, so the sink can be in contact with water every day, whereas mild steel would rust quickly (1). Its smooth surface is hygienic and easy to wipe clean, so bacteria do not build up where food is washed (1). It also looks attractive without a coating, while mild steel would need a finish that could chip off and then rust (1).',
+      weak: 'Stainless steel does not rust and is shiny.',
+      weakWhy: 'About 1 mark at most. “Does not rust” is not linked to the sink, there is no comparison with mild steel, and “shiny” is not a reason.' })
+  ],
+  boss: EX({ q: 'A child’s balance bike has a frame of beech-faced plywood, a polypropylene seat, solid elastomer tyres, and zinc-plated mild-steel bolts. Explain why these materials are suitable.', max: 6,
+    scheme: ['Plywood: veneers with grain at 90°, strong in all directions, will not split under the child’s weight.', 'Beech face: fine grain sands smooth, no splinters; natural look appeals to parents.', 'Polypropylene seat: tough and light; can be moulded to a comfortable shape; water resistant if left outside.', 'Elastomer tyres: absorb shock and grip the ground, so the bike does not slip.', 'Elastomer tyres: solid, so they cannot puncture.', 'Zinc plating protects the steel bolts from rusting.', 'Mild-steel bolts: strong enough to hold the seat and wheels securely.'],
+    rules: ['1 mark per valid explanation.', 'No marks for simply stating properties.', 'No marks for repeating the same explanation for another part.'],
+    model: 'The plywood frame has layers glued with the grain at 90°, so it is strong in all directions and will not split along the grain when the child sits on it (1). The beech face has a fine grain that sands smooth, so there are no splinters to hurt the child’s hands (1). The polypropylene seat is tough and water resistant, so it will not crack or absorb rain if the bike is left outside (1). The elastomer tyres grip the ground and absorb bumps, giving a smoother ride that is less likely to slip (1), and because they are solid they cannot puncture (1). The zinc plating stops the mild-steel bolts rusting when the bike gets wet (1).',
+    weak: 'Plywood is strong. Polypropylene is light. Rubber is grippy. Steel is strong.',
+    weakWhy: '0 marks. Every sentence states a property with no consequence, and “strong” is repeated.' })
+});
+
+// --------------------------------------------------------------------- 2 PROCESSES
+SESSIONS.push({
+  id: 'proc', n: 2, when: 'Saturday', slot: '14:15–15:30', mins: 75, area: 'mm', after: 'Party from 16:30: done for the day',
+  title: 'Manufacturing process recognition',
+  goal: 'Look at a product and name the process from its identifying features, relate the process to a specific part, and justify why it suits that part.',
+  learn: [
+    { h: 'How process questions earn marks (2026 MI Q1(b))', p: [
+      '<b>1 mark</b> for naming the process <b>against a specific part</b> (“the casing is injection moulded”). <b>1 mark</b> for explaining why it is suitable. Maximum 2 per process.',
+      'Accepted reasons: repeatability; accuracy; economies of scale; the shape suits the process; surface finish needs no further finishing; uniform cross-section (extrusion); complex shapes; the process suits the material; holes made accurately with jigs.',
+      '“Moulding” or “cutting” on its own is not a process. Machining or routing must say <b>CNC</b>.',
+      'For “describe the identifying features” questions: each feature you can see earns a mark. Draft, ejection marks and wall thickness are features; “it is plastic” is not.'
+    ]},
+    { h: 'Feature glossary', p: [
+      '<b>Draft angle</b>: a slight taper so the part releases from the mould. <b>Ejection marks</b>: small circles where ejector pins pushed the part out, usually on a hidden face. <b>Split line</b>: thin line where the mould halves met. <b>Flashing</b>: thin excess material at the split line, trimmed off. <b>Injection point</b>: small mark where material entered. <b>Uniform wall thickness</b>: prevents sink marks and warping.',
+      '<b>Bosses</b>: cylindrical posts that receive screws or locate parts (aid assembly). <b>Ribs</b>: thin walls that stiffen a part without making it thick, reducing the risk of distortion. <b>Webs</b>: thin walls supporting bosses.',
+      '<b>Thinning</b>: sheet gets thinner where it is stretched most (vacuum forming, press forming/deep drawing).'
+    ], svg: 'boss' },
+    { h: 'Plastics processes', table: [
+      ['Process', 'Identifying features', 'Typical products'],
+      ['Injection moulding', 'Draft, ejection marks, split line, flashing, injection point, high-quality finish, uniform walls, bosses and ribs', 'Casings for electrical products, toys, sunglasses frames'],
+      ['Blow moulding', 'Hollow, seamless, thin uniform walls, pinch-off scar on the base, no internal features', 'Bottles, containers'],
+      ['Rotational moulding', 'Large hollow form, walls thicker in the corners, excellent finish, mould line', 'Kayaks, traffic cones and barriers, bins, large toys'],
+      ['Vacuum forming', 'Simple shape from thin sheet, walls thinner at deep corners, draft, detail on one side only, trimmed edge', 'Packaging trays, cups, baths'],
+      ['Compression moulding', 'Thermoset part, draft, flashing, can have varied wall thickness', 'Plugs, sockets, pan handles'],
+      ['Extrusion', 'The same cross-section all the way along', 'Window frames, pipes, curtain rails, cable']
+    ]},
+    { h: 'Metal and sheet processes', table: [
+      ['Process', 'Identifying features', 'Typical products'],
+      ['Die casting', 'Metal part with the same features as injection moulding: draft, ejection marks, split line, smooth finish, fine detail', 'Toy cars, pencil sharpeners, kettle handles'],
+      ['Sand casting', 'Rough, grainy surface, large fillets and rounded corners, machined faces where accuracy is needed', 'Vice bodies, engine parts, bench ends'],
+      ['Drop forging', 'Very strong solid metal tool, trimmed flash line', 'Spanners, hammers'],
+      ['Press forming', 'Sheet metal with radiused bends or deep draws, possible stress marks, thinning', 'Sinks, drinks cans, car panels'],
+      ['Piercing / blanking', 'Shear marks (a shiny band then a rough band) on cut edges, repeated identical holes or shapes', 'Washers, key blanks, perforated sheet'],
+      ['Bending', 'Radiused corners, few joins', 'Tubular steel chair frames, brackets'],
+      ['Laser cutting', 'Thin sheet, intricate internal cut-outs, very accurate, brown scorch marks on wood or acrylic', 'Jewellery, lampshades'],
+      ['3D printing', 'Visible layer lines, marks where supports were removed, complex forms', 'Bespoke and replacement parts, prototypes']
+    ]},
+    { h: 'Finishes', p: [
+      '<b>Chrome plating</b>: mirror finish; durable, hygienic, protective and decorative. Taps, handles, chair frames.',
+      '<b>Galvanising</b>: steel dipped in molten zinc; characteristic dull “spangled” look; durable protection outdoors. Fences, bins, railings.',
+      '<b>Plastic dip coating</b>: smooth, thick, coloured, soft to grip. Dish racks, wire baskets, tool handles.'
+    ]}
+  ],
+  model: {
+    q: 'Describe the identifying features that show the casing of a hairdryer has been injection moulded. (3 marks)', max: 3,
+    parts: [
+      ['Small circular ejection-pin marks can be seen on the inside of the casing, where the part was pushed out of the mould.', 'feature 1'],
+      [' A thin split line runs around the edge where the two halves of the mould met.', 'feature 2'],
+      [' The inside has bosses for screws and ribs to stiffen the walls, and the walls are a uniform thickness, which only a closed mould can produce.', 'feature 3']
+    ]
+  },
+  spot: [
+    MC('A 500 ml drinks bottle: hollow, seamless, thin even walls, small scar across the base. Process?', ['Blow moulding', 'Rotational moulding', 'Injection moulding', 'Vacuum forming'], 'Thin-walled seamless hollow container with a pinch-off scar = blow moulding.'),
+    MC('A large plastic kayak with walls slightly thicker at the corners. Process?', ['Rotational moulding', 'Blow moulding', 'Vacuum forming', 'Extrusion'], 'Large hollow form with thicker corners = rotational moulding.'),
+    MC('A chocolate box insert tray: thin sheet, thinner in the deep pockets, detail on one side only. Process?', ['Vacuum forming', 'Injection moulding', 'Compression moulding', 'Blow moulding'], 'Thin sheet, thinning at deep areas, one detailed side = vacuum forming.'),
+    MC('A uPVC window frame section with the same profile all along its length. Process?', ['Extrusion', 'Injection moulding', 'Press forming', 'Die casting'], 'A constant cross-section along the length identifies extrusion.'),
+    MC('A thermoset pan handle. Process?', ['Compression moulding', 'Injection moulding', 'Vacuum forming', 'Rotational moulding'], 'Thermosets are compression moulded: heat and pressure cure the material in the mould.'),
+    MC('A zinc toy car with fine detail, a smooth finish and tiny circles under the base. Process?', ['Die casting', 'Sand casting', 'Drop forging', 'Injection moulding'], 'Metal part with ejection marks and fine detail = die casting. Injection moulding is for plastics.'),
+    MC('A vice body with a rough, grainy surface, but smooth machined jaws. Process for the body?', ['Sand casting', 'Die casting', 'Drop forging', 'Press forming'], 'A rough sand texture plus machined faces where accuracy is needed = sand casting.'),
+    MC('A spanner that must be very strong and impact resistant. Process?', ['Drop forging', 'Sand casting', 'Die casting', 'Laser cutting'], 'Forging improves strength and impact resistance; castings are more brittle.'),
+    MC('A stainless-steel sink bowl formed from one sheet, with rounded corners. Process?', ['Press forming', 'Sand casting', 'Rotational moulding', 'Extrusion'], 'Deep-drawn sheet with radiused corners = press forming.'),
+    MC('Steel washers with a shiny band then a rough band on their cut edges. Process?', ['Piercing and blanking', 'Laser cutting', 'Drop forging', 'Die casting'], 'Shear marks identify piercing/blanking. Blanking cuts the outer disc; piercing makes the centre hole.'),
+    MC('A plywood lampshade with intricate cut-outs and brown edges. Process?', ['Laser cutting', 'CNC routing', 'Piercing', 'Press forming'], 'Scorch marks and intricate internal shapes in thin sheet = laser cutting.'),
+    MC('A replacement knob with visible fine horizontal lines and rough patches where supports were. Process?', ['3D printing', 'Injection moulding', 'Die casting', 'Extrusion'], 'Layer lines and support marks identify additive manufacture (3D printing).'),
+    MC('A tubular steel chair frame with smooth radiused corners and very few joins. Process for the frame shape?', ['Bending', 'Extrusion', 'Sand casting', 'Blanking'], 'Radiused corners formed from one tube = bending.'),
+    MC('A wire dish rack with a smooth, thick, coloured coating that feels soft. Finish?', ['Plastic dip coating', 'Chrome plating', 'Galvanising', 'Painting'], 'Thick, smooth, soft coloured coating = plastic dip coating.'),
+    MC('What is the purpose of a draft angle?', ['A slight taper so the part releases from the mould', 'To strengthen the part', 'To show where the plastic entered', 'To help locate parts during assembly'], 'Without draft the part would grip the mould and could be damaged when ejected.'),
+    PK('Which answer earns 2 marks? “Name a process used to make the remote-control casing and explain why it is suitable.”', [
+      'The casing is injection moulded, because the complex shape with bosses and ribs can be produced in one operation, repeatably, and the mould cost is spread across mass production.',
+      'Moulding, because it is plastic.',
+      'Injection moulding is good for plastics.',
+      'It is made by a machine.'
+    ], 'Process named against the part (1) + a real reason it suits that part (1). “Moulding” is not a specific process.')
+  ],
+  exam: [
+    EX({ q: 'Describe the identifying features that show a shampoo bottle has been blow moulded.', max: 3,
+      scheme: ['Hollow, seamless form with no joins.', 'Thin, uniform wall thickness.', 'Flashing / pinch-off scar on the base.', 'Simple, often symmetrical shape.', 'No internal features.'],
+      rules: ['1 mark per feature described.'],
+      model: 'The bottle is one hollow form with no joins or seams (1). The wall is thin and the same thickness all round (1). There is a small line of flashing across the base where the mould pinched the hot tube closed (1).',
+      weak: 'It is plastic and hollow.',
+      weakWhy: '1 mark at most for “hollow”. “Plastic” is a material, not a process feature.' }),
+    EX({ q: 'A food company needs chocolate box insert trays. Explain why vacuum forming is suitable, and describe one identifying feature of a vacuum-formed tray.', max: 3,
+      scheme: ['Low-cost formers, suitable for low or high volumes.', 'Quick cycle times from thin sheet, suits cheap packaging.', 'Simple shallow forms suit the process.', 'Feature: walls thinner at deep corners.', 'Feature: draft angles on the pocket sides.', 'Feature: detail on one side only / trimmed edge.'],
+      rules: ['1 mark per valid explanation (maximum 2).', '1 mark for a feature.'],
+      model: 'The trays are a simple, shallow shape that can be formed quickly from thin sheet (1), and the former is cheap to make, which keeps the cost of disposable packaging low (1). The tray is thinner at the bottom corners of each pocket, where the sheet was stretched most (1).',
+      weak: 'It is cheap and makes trays.',
+      weakWhy: '0 marks. “Cheap” is not explained, and no feature is described.' }),
+    EX({ q: 'Explain the purpose of bosses and ribs on the inside of an injection-moulded casing.', max: 3,
+      scheme: ['Bosses receive screws, so the casing halves can be joined.', 'Bosses locate parts accurately during assembly.', 'Ribs stiffen thin walls so the casing does not flex.', 'Ribs allow walls to stay thin and uniform, reducing distortion and sink marks.'],
+      rules: ['1 mark per valid explanation.', 'Maximum 2 marks for one feature.'],
+      model: 'Bosses are cylindrical posts that receive self-tapping screws, so the two halves of the casing can be screwed together (1) and located accurately during assembly (1). Ribs stiffen the thin walls, so the casing does not flex when gripped, while keeping the wall thickness uniform, which reduces the risk of distortion as it cools (1).',
+      weak: 'Bosses and ribs make it stronger.',
+      weakWhy: '1 mark at most. Ribs do strengthen, but bosses are mainly for assembly, and nothing is explained.' })
+  ],
+  boss: EX({ q: 'A kettle has an injection-moulded polypropylene body, a press-formed stainless-steel base plate, a die-cast zinc lid catch, and an extruded aluminium handle trim. Name three processes used and explain why each is suitable.', max: 6,
+    scheme: ['Body: injection moulding. Complex shape with bosses, ribs and water window in one operation; repeatable; mould cost spread over mass production.', 'Base plate: press forming. Sheet steel formed accurately and repeatably in one stroke.', 'Lid catch: die casting. Small, complex, accurate metal part with a high-quality finish needing little finishing.', 'Handle trim: extrusion. Uniform cross-section along its length; cut to length; cheap per metre.'],
+    rules: ['Maximum 3 marks for naming processes against parts (1 each).', 'Maximum 3 marks for explanations; maximum 2 marks per process.', 'Explanations must be about this part, not processes in general.'],
+    model: 'The polypropylene body is injection moulded (1), because the complex shape, including the water window and internal bosses, can be moulded in one operation, and the high mould cost is spread across mass production (1). The stainless-steel base plate is press formed (1), because sheet metal can be formed accurately into the shallow dish shape in one stroke, identically every time (1). The zinc lid catch is die cast (1), because it is a small, detailed metal part and die casting gives a high-quality finish that needs little further work (1).',
+    weak: 'Moulding, pressing and casting are used because they are fast.',
+    weakWhy: '0 marks. None is a specific process named against a part, and “fast” is not linked to any part.' })
+});
+
+// --------------------------------------------------------------------- 3 ERGONOMICS
+SESSIONS.push({
+  id: 'erg', n: 3, when: 'Sunday', slot: '09:30–10:30', mins: 60, area: 'design',
+  title: 'Ergonomics',
+  goal: 'Cover anthropometrics, physiology and psychology in every ergonomics answer, link a body part to a product part, use the data booklet and pick the right percentile.',
+  learn: [
+    { h: 'The three areas: the MI expect all three', p: [
+      '<b>Ergonomics</b> is how people interact with products: comfort, ease of use, safety. Higher splits it into three areas. A 5- or 6-mark ergonomics question is usually capped if one area is missing.',
+      '<b>Anthropometrics</b>: product sizes based on body sizes: widths, lengths, heights, reach, grip, adjustability.',
+      '<b>Physiology</b>: the body’s limits: weight, strength, force needed, pressure, strain, fatigue, comfort, dexterity, age.',
+      '<b>Psychology</b>: the senses: look, feel, sound, smell, taste. Colours, symbols, clicks, textures, warning sounds.'
+    ]},
+    { h: 'The two rules from the 2025 course report', p: [
+      '<b>Anthropometrics</b>: name the body part AND the product part. “The handle diameter is based on the grip diameter of an adult hand”, not “it fits your hand”.',
+      '<b>Physiology</b>: refer to preventing or reducing stress, strain, pressure or fatigue. “Easy to use” or “comfortable” on its own gets 0.',
+      '<b>Psychology</b>: name the sense and its effect. “The red stop button signals danger, so the user reacts quickly”, not “it is red”.'
+    ]},
+    { h: 'Percentiles', p: [
+      'Design for the 5th to the 95th percentile, which covers 90% of users.',
+      '<b>Clearance</b> (gaps, doorways, leg room, the space inside a handle): use the <b>95th</b> percentile so the largest users fit.',
+      '<b>Reach</b> (shelf height, control position, pedal distance): use the <b>5th</b> percentile so the smallest users can reach.',
+      '<b>Adjustable</b> products (office chairs, car seats): cover the range from 5th to 95th.',
+      '<b>Grips</b> are a compromise, often near the 50th percentile, sometimes tapered to suit a range.'
+    ]},
+    { h: 'Data booklet values to know (mm)', table: [
+      ['Measurement', '5th', '50th', '95th'],
+      ['Adult male grip diameter', '35', '47', '55'],
+      ['Adult female grip diameter', '33', '38', '44'],
+      ['Adult male hand breadth', '80', '90', '100'],
+      ['Adult female hand breadth', '70', '80', '90'],
+      ['Adult male hand thickness', '26', '30', '34'],
+      ['Adult male popliteal height', '410', '455', '499'],
+      ['Adult female popliteal height', '370', '412', '455'],
+      ['Adult female forward reach', '671', '738', '804'],
+      ['Adult male elbow height', '1021', '1107', '1192'],
+      ['4-year-old grip diameter', '21', '28', '33'],
+      ['4-year-old popliteal height', '227', '261', '295']
+    ], num: true, note: 'Popliteal height = floor to the back of the knee when seated. It sets seat height.' },
+    { h: 'Sentence frames that earn marks', p: [
+      '<b>Anthropometrics</b>: “The [product part] is based on the [percentile] [user group] [body measurement] of [value] mm, so [consequence].”',
+      '<b>Physiology</b>: “The [feature] [does what], which reduces [strain / fatigue / pressure] on the user’s [body part].”',
+      '<b>Psychology</b>: “The [feature] [looks / sounds / feels] [how], so the user [knows or feels what].”'
+    ]}
+  ],
+  model: {
+    q: 'Describe how ergonomics has influenced the design of a cordless drill. Refer to anthropometrics, physiology and psychology. (6 marks)', max: 6,
+    parts: [
+      ['The handle diameter is based on the grip diameter of an adult hand, about 47 mm (50th percentile male), so most users can hold it securely.', 'anthropometrics'],
+      [' The trigger sits where the index finger naturally rests, based on hand length data.', 'anthropometrics'],
+      [' The battery is under the handle so the weight is balanced in the hand, reducing strain on the wrist.', 'physiology'],
+      [' Elastomer grips absorb vibration, reducing fatigue in the hand and arm.', 'physiology'],
+      [' The forward/reverse switch has arrows in a contrasting colour, so the user can see the direction at a glance.', 'psychology: look'],
+      [' The clutch clicks as it turns, so the user hears and feels each setting change.', 'psychology: sound and feel']
+    ]
+  },
+  spot: [
+    MC('Which statement is correct?', ['Anthropometrics is one part of ergonomics: body measurement data', 'Ergonomics and anthropometrics mean the same', 'Ergonomics is one part of anthropometrics', 'Anthropometrics is about the senses'], 'Ergonomics = anthropometrics + physiology + psychology.'),
+    MC('Which percentile sets the height of a doorway?', ['95th percentile height', '5th percentile height', '50th percentile height', '5th percentile shoulder width'], 'Clearance: the tallest users must fit, so 95th.'),
+    MC('Which percentile sets the highest shelf everyone must reach?', ['5th percentile vertical reach', '95th percentile vertical reach', '50th percentile height', '95th percentile shoulder height'], 'Reach: the smallest users must reach it, so 5th.'),
+    MC('“The kettle handle is angled so the wrist stays straight when pouring, reducing strain.” Which area?', ['Physiology', 'Anthropometrics', 'Psychology', 'Aesthetics'], 'Reducing strain on the body = physiology.'),
+    MC('“A microwave beeps when the food is ready.” Which area?', ['Psychology', 'Physiology', 'Anthropometrics', 'Function only'], 'A sound that tells the user something = psychology (the senses).'),
+    MC('The gap between a car door handle and the door must let every adult’s fingers in. Which data?', ['95th percentile adult male hand thickness (34 mm)', '5th percentile adult female hand thickness', '50th percentile grip diameter', '5th percentile hand breadth'], 'It is a clearance, so use the largest users: 95th percentile hand thickness.'),
+    MC('An adjustable office chair seat height for adults should cover roughly…', ['370 mm to 499 mm (5th female to 95th male popliteal height)', '410 mm only', '227 mm to 295 mm', '455 mm to 499 mm'], 'Adjustable: from the 5th percentile female (370) to the 95th percentile male (499) popliteal height.'),
+    PK('Which answer earns a physiology mark?', ['The saddle is padded to spread the rider’s weight, reducing pressure on long rides.', 'The bike is easy to use.', 'The saddle is comfortable.', 'The saddle fits the rider.'], 'Physiology needs a reference to reducing stress, strain, pressure or fatigue (2025 report).'),
+    PK('Which answer earns an anthropometrics mark?', ['The width of the mouse is based on the hand breadth of an adult, so the palm rests on it.', 'The mouse fits the hand.', 'The mouse is the right size.', 'The mouse is designed for most people.'], 'Body part (hand breadth) linked to product part (width of the mouse).')
+  ],
+  exam: [
+    EX({ q: 'Using the data booklet, state a suitable seat-height range for an adjustable office chair for adults, and explain your choice.', max: 3,
+      scheme: ['Range from about 370 mm (5th percentile female popliteal height) to about 499 mm (95th percentile male).', 'Covers 90% of the adult population, from small women to large men.', 'Feet rest flat on the floor, so the front edge of the seat does not press into the back of the thigh, reducing pressure / restricted circulation.', 'Accept allowance added for shoes if explained.'],
+      rules: ['1 mark for a correct range from the data booklet.', '1 mark each for explanations (maximum 2).'],
+      model: 'The seat should adjust from about 370 mm, the 5th percentile adult female popliteal height, to about 499 mm, the 95th percentile adult male (1). This covers 90% of adults, from small women to large men (1). At the right height each user’s feet rest flat on the floor, so the seat edge does not press into the back of their thighs, reducing pressure and discomfort (1).',
+      weak: 'It should be adjustable so it fits everyone.',
+      weakWhy: '0 marks. No data booklet values and no consequence for the user.' }),
+    EX({ q: 'Describe how psychology has influenced the design of the control panel on a microwave oven.', max: 3,
+      scheme: ['Beep when food is ready, so the user knows without watching.', 'Symbols/icons (snowflake for defrost) so the function is recognised without reading.', 'Buttons click or have a raised feel, confirming they have been pressed.', 'Contrasting colours or a backlit display, so settings are easy to see.', 'A large, distinct start/stop button so it is found quickly.'],
+      rules: ['1 mark per valid description.', 'Must name the sense and its effect.'],
+      model: 'The microwave beeps when the food is ready, so the user knows without having to watch it (1). Each button has a symbol, such as a snowflake for defrost, so the user recognises the function at a glance (1). The buttons give a soft click when pressed, so the user can feel that the input has registered (1).',
+      weak: 'It has buttons and a screen that are easy to use.',
+      weakWhy: '0 marks. No sense is named and “easy to use” has no effect described.' }),
+    EX({ q: 'A grip is being designed for a hand tool used by adults. Explain which grip diameter you would choose, using the data booklet.', max: 2,
+      scheme: ['A size that suits most users, e.g. around the 50th percentile (male 47 mm / female 38 mm), or a taper from about 38 mm to 47 mm.', 'Too large and users with small hands cannot grip securely; too small and users with large hands strain to hold it.'],
+      rules: ['1 mark for a justified choice with a value.', '1 mark for the consequence for users.'],
+      model: 'I would taper the grip from about 38 mm (50th percentile adult female) to 47 mm (50th percentile adult male), so most adults can wrap their hand round it (1). If it were the 95th percentile male size (55 mm), users with small hands could not grip it securely and would strain to hold it (1).',
+      weak: 'The 95th percentile, because it is the biggest.',
+      weakWhy: '0 marks. There is no reason linked to the users, and a 95th-percentile grip would be too big for most people.' })
+  ],
+  boss: EX({ q: 'Describe how ergonomics has influenced the design of a cordless hedge trimmer. Refer to anthropometrics, physiology and psychology.', max: 6,
+    scheme: ['Anthropometrics: handle diameter based on adult grip diameter, so it can be held securely.', 'Anthropometrics: the gap inside the front loop handle based on 95th percentile hand breadth / gloved hand.', 'Anthropometrics: distance between the two handles based on shoulder width, for a stable two-handed hold.', 'Physiology: lightweight materials and battery position balance the trimmer, reducing strain on the arms and back.', 'Physiology: elastomer grips absorb vibration, reducing fatigue in the hands.', 'Physiology: trigger needs little force to hold, reducing finger fatigue.', 'Psychology: bright guard colour/contrasting trigger draws attention to controls and the danger zone.', 'Psychology: LED battery indicator shows charge at a glance.', 'Psychology: textured grip feels secure.'],
+    rules: ['1 mark per valid description.', 'Maximum 4 marks if one area is missing.', 'Anthropometric points need a body part linked to a product part; physiology points need a reference to reducing strain, fatigue or pressure.'],
+    model: 'The handle diameter is based on the grip diameter of an adult hand, so users can hold it firmly (1), and the gap inside the front loop handle is based on the 95th percentile adult male hand breadth, so a gloved hand fits through (1). The battery is placed at the rear so the trimmer balances in the hands, reducing strain on the arms when it is held up for long periods (1). Elastomer grips absorb vibration from the blade, reducing fatigue in the hands (1). The trigger is bright orange so it stands out from the black body and is found quickly (1), and a row of LEDs shows battery charge, so the user knows at a glance how much cutting time is left (1).',
+    weak: 'It is light, comfortable and easy to hold. The handle fits your hand.',
+    weakWhy: '0–1 mark. No body part is linked to a product part, “light” and “comfortable” have no reference to strain, and there is no psychology.' })
+});
+
+// --------------------------------------------------------------------- 4 AESTHETICS
+SESSIONS.push({
+  id: 'aes', n: 4, when: 'Sunday', slot: '10:45–11:30', mins: 45, area: 'design',
+  title: 'Aesthetics',
+  goal: 'Use the aesthetic vocabulary precisely: element + where on the product + the effect it creates, linked to the target market or location of use.',
+  learn: [
+    { h: 'Aesthetic elements', p: [
+      '<b>Form</b>: the overall 3D shape (geometric, organic, curved, angular). <b>Proportion</b>: the size of one part relative to another or to the whole.',
+      '<b>Colour</b>: hue, brightness, finish; carries meaning (red = danger, white = clean). <b>Texture</b>: how a surface looks or feels (smooth, matt, ribbed, grain).',
+      '<b>Balance</b>: visual weight, symmetrical or asymmetrical. <b>Harmony</b>: parts that match and sit well together. <b>Contrast</b>: deliberate difference to draw attention.',
+      'The 2026 MI also credit shape, line, pattern, light, symmetry, fashion and style, brand identity, market trends and suitability for the target market.'
+    ]},
+    { h: 'What influences aesthetics', p: [
+      'The target market and end user (age, lifestyle, budget).',
+      'The location of use (must it match a kitchen, an office, a garden?).',
+      'Fashion, trends and style (retro, minimalist, industrial).',
+      'Materials, processes and finishes: injection moulding moulds colour and texture in; oak has a strong grain; chrome plating gives a mirror finish; galvanising looks industrial.',
+      'The senses: look, feel, sound, smell, taste. A car door is engineered to close with a solid “thud”, because it sounds well built.'
+    ]},
+    { h: 'Getting the mark: 2026 MI exemplars', p: [
+      '“The colour of the dimmable lamp is silver” = <b>0</b>. It only states the colour.',
+      '“Texture has influenced the first lamp as it is wooden, so it has a wood texture” = <b>0</b>.',
+      '“Brass fixings create contrast in colour, finish and texture to the beech wood” = <b>1</b>.',
+      '“Repeated circle use gives a sense of balance” = <b>1</b>.',
+      '<b>Frame</b>: “The [element] of the [part] [description], which gives a [effect / mood], appealing to [target market] or suiting [location].”'
+    ]}
+  ],
+  model: {
+    q: 'Kettle A has a polished stainless-steel dome body and a chrome handle. Kettle B has a white gloss polypropylene body with a blue translucent water window. Describe how aesthetics has influenced their design. (4 marks)', max: 4,
+    parts: [
+      ['The curved dome form of Kettle A gives it a retro style that appeals to buyers who want a classic look in their kitchen.', 'form + style + market'],
+      [' Its polished stainless steel reflects light, giving a premium appearance.', 'finish + effect'],
+      [' Kettle B’s blue window contrasts with the white body, drawing the eye to the water level.', 'contrast + effect'],
+      [' Its white gloss finish looks clean and modern, harmonising with white kitchen appliances.', 'harmony + location']
+    ]
+  },
+  spot: [
+    MC('A range of kitchen appliances all share the same matt grey finish and rounded corners, so they look like a set. This is…', ['Harmony', 'Contrast', 'Proportion', 'Texture'], 'Matching elements that sit well together = harmony.'),
+    MC('A black handle on a white food mixer, used to draw attention to where you hold it, is…', ['Contrast', 'Harmony', 'Balance', 'Proportion'], 'A deliberate difference in colour = contrast.'),
+    MC('A lamp with a large shade on a very thin stem looks top-heavy. Which element is the problem?', ['Proportion / balance', 'Texture', 'Colour', 'Harmony'], 'Proportion is the size of parts relative to each other; a top-heavy look is poor balance.'),
+    MC('Why do car makers engineer the sound of a door closing?', ['A solid “thud” makes the car feel well built and high quality', 'To meet safety standards', 'To reduce weight', 'To make it easier to manufacture'], 'Sound is one of the senses that affects perceived quality.'),
+    MC('A smartphone case with a fine diamond pattern moulded into its sides. Which elements?', ['Texture and pattern', 'Proportion and balance', 'Harmony only', 'Colour only'], 'A repeated moulded surface detail is both pattern and texture (it can be seen and felt).'),
+    MC('Which manufacturing process lets colour and surface texture be built into a part with no painting?', ['Injection moulding', 'Sand casting', 'Laser cutting', 'Bending'], 'Coloured granules and a textured mould give a finished surface straight from the mould.'),
+    PK('Which answer earns the mark? “Describe how aesthetics has influenced the design of the speaker.”', ['The speaker’s fabric cover has a soft woven texture that looks homely, so it blends in with living-room furnishings.', 'The speaker is grey.', 'The speaker has a fabric texture.', 'The speaker looks nice.'], 'Element + where + effect. Stating a colour or a texture alone earned 0 in the 2026 MI.'),
+    PK('Which answer earns the mark?', ['The exposed finger joints on the box create a repeated pattern along the corners, which shows off the craftsmanship.', 'The box has finger joints.', 'The box is made of wood.', 'The box is square.'], 'Pattern (element) + finger joints at the corners (where) + shows craftsmanship (effect).')
+  ],
+  exam: [
+    EX({ q: 'Explain the difference between harmony and contrast, giving an example of each on a product.', max: 2,
+      scheme: ['Harmony: elements that match or blend, e.g. a kettle and toaster in the same matt finish and form, so they look like a set.', 'Contrast: elements that are deliberately different to draw attention, e.g. a red stop button on a grey machine.'],
+      rules: ['1 mark for each explanation with a valid product example.'],
+      model: 'Harmony is when elements match or blend, for example a kettle and toaster with the same curved form and matt cream finish, so they look like a set on the worktop (1). Contrast is a deliberate difference that draws attention, for example a bright red emergency stop button on a grey machine, so it is found instantly (1).',
+      weak: 'Harmony is when things go together and contrast is when they don’t.',
+      weakWhy: '0 marks. Vague, and there are no examples.' }),
+    EX({ q: 'Describe how materials and manufacturing processes can influence the aesthetics of a product.', max: 3,
+      scheme: ['Injection moulding allows colour and texture to be moulded in, giving a consistent finish without painting.', 'Natural wood grain (e.g. oak) gives warmth and a traditional look.', 'Chrome plating gives a mirror finish that looks premium.', 'Galvanising gives a spangled, industrial look.', 'Transparent acrylic shows internal parts or gives a light, modern look.', 'Extrusion gives crisp, consistent lines.'],
+      rules: ['1 mark per valid description.', 'Must say what aesthetic effect the material or process creates.'],
+      model: 'Injection moulding allows colour and a textured surface to be moulded straight into the part, so the product has a consistent finish without painting (1). Oak has a strong grain that gives furniture a warm, traditional look (1). Chrome plating gives taps and handles a mirror finish that looks modern and high quality (1).',
+      weak: 'Wood looks natural, metal is shiny, plastic can be any colour.',
+      weakWhy: 'About 1 mark. General statements about materials, not how they influence a product’s aesthetics.' })
+  ],
+  boss: EX({ q: 'Desk fan A has a chrome-plated steel cage, curved blades and a heavy die-cast base in the style of a 1950s fan. Desk fan B is a tall white ABS tower with no visible blades and a thin blue light along its front. Describe how aesthetics has influenced the design of the two fans.', max: 4,
+    scheme: ['A: retro 1950s style appeals to buyers who like vintage design.', 'A: chrome cage reflects light, giving a premium, polished look.', 'A: circular cage and blades give symmetry and balance.', 'A: heavy base is in proportion to the cage, so it looks stable.', 'B: tall, slim geometric form looks modern and minimal.', 'B: white gloss finish looks clean and harmonises with modern interiors.', 'B: blue light contrasts with the white body, drawing attention and looking high-tech.'],
+    rules: ['1 mark per valid description.', 'Stating an element or material without its effect: 0.'],
+    model: 'Fan A’s rounded cage and blades are styled like a 1950s fan, which appeals to buyers who like a retro look (1), and the chrome plating reflects light, giving it a polished, premium appearance (1). Fan B’s tall, slim form with no visible blades looks modern and minimal, suiting a contemporary office (1), and the thin blue light contrasts with the white body, giving it a high-tech look (1).',
+    weak: 'Fan A is chrome and fan B is white.',
+    weakWhy: '0 marks. Two finishes stated with no effect.' })
+});
+
+// --------------------------------------------------------------------- 5 ENVIRONMENT
+SESSIONS.push({
+  id: 'env', n: 5, when: 'Sunday', slot: '11:45–12:30', mins: 45, area: 'impact', after: 'Lunch, then football 14:00–17:00',
+  title: 'The environment',
+  goal: 'Describe specific methods designers use to reduce a product’s environmental impact, and explain the positive and negative impacts of materials and manufacturing.',
+  learn: [
+    { h: 'Methods to limit a product’s impact (course specification)', p: [
+      '<b>Design for recyclability</b>: use fewer materials, or one material; mark plastics with identification codes; make parts easy to separate (screws, snap fits, not glue or bonding different materials together).',
+      '<b>Design for re-use</b>: durable, refillable, repairable or modular products; replaceable parts and batteries.',
+      '<b>Efficiency</b>: use less material (thin walls with ribs, nesting parts on a sheet to cut waste); energy-efficient processes; energy-efficient in use (LEDs, insulation, auto switch-off, eco modes).'
+    ]},
+    { h: 'Supporting sustainability across the product’s life', p: [
+      '<b>Materials</b>: renewable (sustainably sourced timber, bioplastics such as PLA) or recycled content.',
+      '<b>Manufacture</b>: reduce waste and pollution; recycle offcuts and sprues; efficient processes.',
+      '<b>Transport</b>: flat-pack so more fit per lorry; local sourcing; lighter products use less fuel.',
+      '<b>Use</b>: energy efficient; increase life expectancy; easy maintenance and repair.',
+      '<b>Disposal</b>: can it be repaired, re-used, recycled? Take-back schemes.',
+      'Investigating a product’s sustainability means looking at every one of these stages (its life cycle).'
+    ]},
+    { h: 'Impact of materials: positive and negative', p: [
+      '<b>Plastics</b>: lightweight (less fuel to transport), durable, cheap, food packaging reduces food waste, thermoplastics recyclable; but most come from oil (finite), persist for hundreds of years in landfill and the sea, break into microplastics, mixed plastics are hard to recycle.',
+      '<b>Metals</b>: very recyclable without losing quality (aluminium recycling uses far less energy than extracting it from ore); durable; but mining and extraction use large amounts of energy and damage landscapes.',
+      '<b>Timber</b>: renewable if from managed forests, biodegradable, stores carbon; but deforestation if not sustainably sourced; boards such as MDF use resin glues that are hard to recycle.',
+      'Cheap materials contribute to a <b>throwaway society</b>: products replaced rather than repaired.'
+    ]},
+    { h: 'Impact of manufacturing technologies and planned obsolescence', p: [
+      'Mass production created a consumer society, with more products bought and discarded, plus pollution and waste from factories.',
+      'Newer technology can help: CNC nesting cuts waste from sheet; 3D printing uses only the material needed and can make spare parts locally; automation is efficient but uses a lot of energy.',
+      '<b>Planned obsolescence</b> increases waste, pollution and the raw materials and energy used to make replacements, but can encourage design for recycling.'
+    ]},
+    { h: 'How environment answers lose marks', p: [
+      '“Eco-friendly”, “better for the planet” or “recyclable” on its own = 0. Say the <b>method</b> and its <b>effect</b>.',
+      'Make it about the product in the question: “the kettle body is held with screws, not glue, so the element can be replaced instead of the whole kettle being thrown away”.',
+      'For “discuss” or “positive and negative”, give both sides, or your marks will be capped.'
+    ]}
+  ],
+  model: {
+    q: 'Describe methods a designer could use to reduce the environmental impact of a toaster. (4 marks)', max: 4,
+    parts: [
+      ['The casing could be screwed together rather than glued, so it can be taken apart and the metal and plastic separated for recycling.', 'design for recyclability'],
+      [' Each plastic part could be marked with its identification code, so it is sorted into the right recycling stream.', 'design for recyclability'],
+      [' The heating element and crumb tray could be replaceable, so a faulty part is repaired instead of the toaster being thrown away.', 'design for re-use / life expectancy'],
+      [' Insulated walls and an auto switch-off would reduce the electricity used each time it is used.', 'efficiency in use']
+    ]
+  },
+  spot: [
+    MC('A kettle’s plastic body, steel element and cable separate with a screwdriver, and each part is marked with its material. This is…', ['Design for recyclability', 'Design for re-use', 'Planned obsolescence', 'Technology push'], 'Easy separation and material marking let each material be recycled.'),
+    MC('A cleaning spray is sold in a durable bottle, with concentrate refills posted in small pouches. This is…', ['Design for re-use', 'Design for recyclability', 'A throwaway product', 'Niche marketing'], 'The bottle is kept and re-used; only the concentrate is replaced.'),
+    MC('Which method supports sustainability during transport?', ['Flat-packing so more products fit in each lorry', 'Adding extra protective packaging', 'Air-freighting every order', 'Making the product heavier'], 'Fewer journeys means less fuel and fewer emissions.'),
+    MC('Laying out parts on a sheet so they fit closely together before CNC cutting is done to…', ['Reduce material waste (nesting)', 'Improve aesthetics', 'Make the parts stronger', 'Speed up painting'], 'Nesting means less offcut waste from each sheet.'),
+    MC('Which is a <b>negative</b> environmental impact of plastics?', ['Most are made from oil, a finite resource, and persist for hundreds of years', 'They are lightweight, so less fuel is used in transport', 'Food packaging reduces food waste', 'Thermoplastics can be recycled'], 'The other three are positives.'),
+    MC('Why is it hard to recycle a product where ABS is permanently bonded to an aluminium panel?', ['The materials cannot easily be separated into single streams', 'Aluminium cannot be recycled', 'ABS is a thermoset', 'Bonded products are too light'], 'Recycling needs single materials; bonding different materials together prevents separation.'),
+    MC('What is meant by a “throwaway society”?', ['Products are cheap and quickly discarded rather than repaired or kept', 'All products are recycled', 'Products last a lifetime', 'Only refillable packaging is used'], 'Cheap materials and planned obsolescence encourage discarding.'),
+    PK('Which answer earns the mark? “Describe one way the designer has reduced the environmental impact of the vacuum cleaner.”', ['The battery clips in rather than being glued, so it can be replaced when it fails instead of the whole vacuum being thrown away.', 'It is eco-friendly.', 'It is recyclable.', 'It is better for the environment than other vacuums.'], 'Method + effect, about this product. “Eco-friendly” and “recyclable” alone earn nothing.')
+  ],
+  exam: [
+    EX({ q: 'Explain the positive and negative environmental impacts of using aluminium for drinks cans.', max: 3,
+      scheme: ['Positive: can be recycled repeatedly without losing quality.', 'Positive: recycling uses far less energy than extracting new aluminium from ore.', 'Positive: lightweight, so less fuel is used in transport.', 'Negative: extracting aluminium from bauxite ore uses large amounts of energy.', 'Negative: mining damages landscapes and habitats.', 'Negative: cans not recycled go to landfill or litter.'],
+      rules: ['1 mark per valid explanation.', 'Maximum 2 marks for one side only.'],
+      model: 'Aluminium can be recycled again and again without losing quality, and recycling uses far less energy than making new aluminium from ore (1). The cans are lightweight, so less fuel is needed to transport them (1). However, extracting aluminium from bauxite needs a huge amount of energy, and the mining damages the landscape (1).',
+      weak: 'Aluminium is recyclable so it is good for the environment.',
+      weakWhy: '1 mark at most. One side only and the benefit is not explained.' }),
+    EX({ q: 'Explain how planned obsolescence affects the environment.', max: 2,
+      scheme: ['More products thrown away, increasing waste in landfill and pollution.', 'More raw materials and energy used to make replacements.', 'Can promote efficient use of resources and design for recycling.'],
+      rules: ['1 mark per valid explanation.'],
+      model: 'Because products are designed to be replaced after a short time, more are thrown away, increasing waste in landfill (1), and more raw materials and energy are used manufacturing the replacements (1).',
+      weak: 'It is bad for the environment.',
+      weakWhy: '0 marks. Nothing is explained.' })
+  ],
+  boss: EX({ q: 'Describe how a designer could improve the sustainability of a garden bench at each stage of its life: materials, manufacture, transport, use and disposal.', max: 6,
+    scheme: ['Materials: sustainably sourced timber (FSC-certified) or recycled plastic lumber.', 'Materials: avoid mixing materials that cannot be separated.', 'Manufacture: CNC nesting to cut waste; offcuts recycled or burned for energy.', 'Manufacture: water-based finishes reduce pollution.', 'Transport: flat-packed with knock-down fittings, so more fit per lorry.', 'Transport: made and sourced locally.', 'Use: durable wood (oak) and stainless fixings to increase life expectancy.', 'Use: replaceable slats so it can be repaired.', 'Disposal: timber biodegrades; metal fixings can be removed and recycled.'],
+    rules: ['1 mark per valid description.', 'Maximum 2 marks per stage.', 'Each point must include the method and its effect.'],
+    model: 'The slats could be made from FSC-certified oak, so the timber comes from forests that are replanted (1). Laying out the parts closely on each board before CNC cutting reduces offcut waste (1). Sold flat-packed with knock-down fittings, more benches fit in each lorry, so less fuel is used per bench (1). Oak is naturally durable and stainless-steel bolts will not rust, so the bench lasts for many years outdoors (1), and slats bolted rather than glued can be replaced individually if one is damaged (1). At the end of its life the bolts can be removed and recycled and the untreated oak will biodegrade (1).',
+    weak: 'Use recycled materials and make it eco-friendly. Recycle it at the end.',
+    weakWhy: 'About 1 mark at most. Vague, only two stages, and no effects described.' })
+});
+
+// --------------------------------------------------------------------- 6 PRACTICE TEST
+const TEST = {
+  id: 'test', n: 6, when: 'Sunday', slot: '18:30–19:55', mins: 85, area: 'paper',
+  title: 'Practice test (50 marks)', time: 85, total: 50,
+  intro: 'Built on the five topics your teacher listed, in the style of the real paper, with no holistic question. Allow 85 minutes (about 1.7 minutes per mark, the same rate as the exam). Type each answer before revealing the scheme, then mark yourself honestly. Missed marks go to Repeat Offenders.',
+  stimulus: {
+    h: 'Section A: two desk lamps',
+    p: [
+      '<b>Lamp A</b>: a heavy round base die cast in zinc alloy and chrome plated, with an elastomer pad underneath. An extruded aluminium arm with a hinged joint. An injection-moulded ABS shade with cooling vents, in a matt black finish. A rotary dimmer knob on the base that clicks as it turns. LED light source. Assembled with screws into bosses.',
+      '<b>Lamp B</b>: base and arm laser cut from 6 mm birch plywood, joined with brass bolts and wing nuts so the angle can be changed by hand. A vacuum-formed white polystyrene shade. LED light source. Sold flat-packed in a recycled card box.'
+    ]
+  },
+  questions: [
+    EX({ s: 1, n: '1(a)', tp: 'mat', q: 'Explain why the materials chosen are suitable for the lamps and/or their parts.', max: 6,
+      scheme: ['Zinc alloy base: heavy, so the lamp is stable and will not tip when the arm is extended.', 'Zinc alloy: low melting point, suits die casting into the round base shape.', 'Chrome plating: protects the zinc from corrosion and gives a premium mirror finish.', 'Elastomer pad: grips the desk so the lamp does not slide, and prevents scratching.', 'Aluminium arm: lightweight, so the arm does not unbalance the lamp; corrosion resistant.', 'ABS shade: tough and heat resistant enough for an LED; impact resistant if knocked.', 'Birch plywood: strong in all directions, will not split at the bolt holes; stable thin sheet suits laser cutting.', 'Brass bolts: corrosion resistant; gold colour contrasts with the birch.', 'Polystyrene shade: cheap, lightweight, easily vacuum formed; white diffuses the light (LED runs cool).'],
+      rules: ['1 mark per valid explanation.', 'No marks for simply stating properties.', 'No marks for repetition.'],
+      model: 'Lamp A’s zinc-alloy base is heavy, so the lamp stays stable and does not tip when the arm is extended (1). The chrome plating protects the zinc from corrosion and gives a mirror finish that looks premium (1). The elastomer pad grips the desk so the lamp does not slide, and it will not scratch the desk surface (1). The aluminium arm is lightweight, so it does not make the lamp top-heavy (1). Lamp B’s birch plywood is strong in all directions because of its cross-grained layers, so it does not split around the bolt holes (1). The polystyrene shade is cheap and light, and the white plastic diffuses the light; it is safe because the LED stays cool (1).',
+      weak: 'Zinc is heavy. Aluminium is light. Plywood is strong. ABS is tough. Brass is shiny.',
+      weakWhy: '0 marks. Five stated properties with no consequence for the lamps.' }),
+    EX({ s: 1, n: '1(b)', tp: 'proc', q: 'Name three manufacturing processes used to make the lamps and explain why each is suitable.', max: 6,
+      scheme: ['Lamp A base: die casting. Complex heavy metal form, accurate and repeatable, good finish, mass production.', 'Lamp A arm: extrusion. Uniform cross-section along its length, cut to length.', 'Lamp A shade: injection moulding. Vents, bosses and texture moulded in one operation; mould cost spread over volume.', 'Lamp A: chrome plating. Protective decorative finish on the base.', 'Lamp B base/arm: laser cutting. Accurate profiles and holes from thin sheet; no tooling, suits low/medium volume.', 'Lamp B shade: vacuum forming. Simple shell from thin sheet, cheap former.'],
+      rules: ['Maximum 3 marks for processes named against parts (1 each).', 'Maximum 3 marks for explanations; maximum 2 per process.'],
+      model: 'Lamp A’s base is die cast (1), because molten zinc alloy fills the steel die to produce the heavy, accurate base with a smooth finish, identically every time (1). The arm is extruded aluminium (1), because the arm has the same cross-section along its length and can simply be cut to length (1). Lamp B’s plywood base and arm are laser cut (1), because accurate profiles and bolt holes can be cut straight from a CAD file with no tooling cost (1).',
+      weak: 'Casting, moulding and cutting.',
+      weakWhy: '0 marks. None is named against a part, two are not specific processes, and nothing is explained.' }),
+    EX({ s: 1, n: '1(c)', tp: 'erg', q: 'Describe how ergonomics has influenced the design of the lamps.', max: 5,
+      scheme: ['Anthropometrics: dimmer knob diameter based on finger/grip data so it is easy to turn.', 'Anthropometrics: arm length/height based on seated eye level or forward reach, so light falls on the work area and the lamp head can be reached.', 'Anthropometrics: wing nut size based on finger and thumb size so it can be turned by hand.', 'Physiology: wing nuts can be loosened without a tool and with little force, reducing strain on the fingers.', 'Physiology: LED light positioned to avoid glare, reducing eye strain.', 'Physiology: heavy base so it does not move when the head is adjusted with one hand, reducing effort.', 'Psychology: dimmer clicks so the user hears and feels each setting.', 'Psychology: matt black shade avoids glare and looks calm; white shade gives a soft glow.'],
+      rules: ['1 mark per valid description.', 'Maximum 4 marks if only one or two areas are covered.', 'Anthropometric points need a body part linked to a product part; physiology points need a reference to reducing strain or fatigue.'],
+      model: 'The height of the arm is based on the seated eye level of an adult, so the shade sits above the line of sight and the light falls on the desk without shining into the user’s eyes (1). The dimmer knob diameter is based on finger size, so it can be gripped and turned between finger and thumb (1). Positioning the light to avoid glare reduces eye strain during long periods of study (1). Lamp B’s wing nuts can be loosened by hand with little force, reducing strain on the fingers (1). Lamp A’s dimmer clicks as it turns, so the user hears and feels each brightness setting (1).',
+      weak: 'The lamps are easy to use and adjust and fit on a desk.',
+      weakWhy: '0 marks. No body part, no reference to strain and no sense described.' }),
+    EX({ s: 1, n: '1(d)', tp: 'aes', q: 'Describe how aesthetics has influenced the design of the lamps.', max: 4,
+      scheme: ['A: chrome base contrasts with the matt black shade, giving a premium, modern look.', 'A: round base and shade create balance / repeated circular form.', 'A: matt black and chrome suit a modern office or industrial style.', 'B: natural birch grain gives a warm, natural, eco look.', 'B: brass bolts contrast in colour and finish with the pale birch.', 'B: flat profiles and visible fixings give a simple, Scandinavian / craft style.', 'B: white shade harmonises with the pale wood and gives a soft glow.'],
+      rules: ['1 mark per valid description.', 'Element + where + effect.'],
+      model: 'Lamp A’s mirror-finish chrome base contrasts with the matt black shade, giving the lamp a sleek, premium look that suits a modern office (1), and the round base repeats the circular form of the shade, giving it balance (1). Lamp B shows the natural grain of the birch, giving a warm, natural look that appeals to buyers who like simple Scandinavian styling (1), and the gold brass bolts contrast with the pale wood, drawing attention to how it is put together (1).',
+      weak: 'Lamp A is black and silver. Lamp B is wooden.',
+      weakWhy: '0 marks. Colours and a material with no effect described.' }),
+    EX({ s: 1, n: '1(e)', tp: 'env', q: 'Explain which lamp you think has the lower impact on the environment.', max: 4,
+      scheme: ['B: plywood from a renewable source (if sustainably managed).', 'B: flat-packed, so more per lorry, less fuel per lamp.', 'B: recycled card packaging.', 'B: bolted, not glued, so parts can be replaced or separated.', 'B negative: polystyrene is oil-based and less often recycled; plywood resin glue hard to recycle.', 'A: metals can be separated and recycled; durable, long life.', 'A negative: die casting and chrome plating use large amounts of energy and chemicals; zinc/aluminium extraction energy-intensive.', 'Both: LEDs use little electricity and last a long time.', 'A justified decision.'],
+      rules: ['1 mark per valid explanation.', 'Maximum 3 marks without a clear decision.', 'Either lamp may be chosen if justified.'],
+      model: 'Lamp B has the lower impact. Its plywood comes from a renewable source if the forest is managed (1), and because it is flat-packed in a recycled card box, more lamps fit in each lorry, so less fuel is used per lamp (1). The parts are bolted rather than glued, so a damaged part can be replaced instead of the whole lamp being thrown away (1). Lamp A’s die-cast, chrome-plated base takes a lot of energy to produce, although its metal can be recycled at the end of its life (1).',
+      weak: 'Lamp B, because wood is eco-friendly.',
+      weakWhy: '0 marks. “Eco-friendly” is not an explanation.' }),
+    // Section B
+    EX({ s: 2, n: '2(a)', tp: 'mat', q: 'Describe methods, other than symbols and labels, that could be used to identify whether a part is made from wood, metal or plastic, and which one.', max: 3,
+      scheme: ['Magnet test (ferrous vs non-ferrous).', 'Colour (copper, brass; woods).', 'Grain pattern of woods.', 'Float test on plastics with density.', 'Flame test with observations.', 'Weight comparison.'],
+      rules: ['1 mark per method described with material and result.', '0 for naming only.'],
+      model: 'A magnet will be attracted to a mild-steel part but not to aluminium, showing whether the metal is ferrous (1). The grain of a wood can be compared with samples: beech has a fine, even grain, while oak is strong and open (1). A piece of plastic can be dropped into water: polypropylene floats as it is less dense than water, while ABS sinks (1).',
+      weak: 'Magnet test, float test, look at it.',
+      weakWhy: '0 marks. Names only.' }),
+    EX({ s: 2, n: '2(b)', tp: 'mat', q: 'Name a suitable thermosetting plastic for a saucepan handle and explain why it is suitable.', max: 3,
+      scheme: ['Melamine formaldehyde or urea formaldehyde (accept phenol formaldehyde / Bakelite if named).', 'Heat resistant, so it will not soften next to the hot pan.', 'Poor conductor of heat, so the handle stays cool to hold.', 'Hard and rigid, so it does not bend under the weight of a full pan.'],
+      rules: ['1 mark for the material.', '1 mark each for two explanations.'],
+      model: 'Melamine formaldehyde (1). As a thermoset it will not soften when it gets hot next to the pan (1), and it is a poor conductor of heat, so the handle stays cool enough to hold (1).',
+      weak: 'Polypropylene, because it is heat resistant.',
+      weakWhy: '0 marks. Polypropylene is a thermoplastic, and the explanation has no consequence.' }),
+    EX({ s: 2, n: '2(c)', tp: 'proc', q: 'Describe the identifying features of a product that has been rotationally moulded.', max: 3,
+      scheme: ['Hollow form.', 'Wall thickness fairly uniform but thicker in the corners.', 'Excellent surface finish / can be textured.', 'Mould parting line / flashing.', 'Often large.'],
+      rules: ['1 mark per feature described.'],
+      model: 'The product is a hollow, one-piece form, often large such as a kayak (1). The walls are an even thickness but slightly thicker in the corners (1). A faint line can be seen where the two halves of the mould met (1).',
+      weak: 'It is big and plastic.',
+      weakWhy: '0–1 mark. “Big” is weak, and “plastic” is not a process feature.' }),
+    EX({ s: 2, n: '2(d)', tp: 'proc', q: 'Explain why a spanner is drop forged rather than sand cast.', max: 2,
+      scheme: ['Forging improves strength and impact resistance; a sand casting could be brittle and snap.', 'Forging gives a better surface finish than the rough texture of sand casting.', 'Suits large volumes; sand moulds are destroyed after each casting.'],
+      rules: ['1 mark per valid explanation.'],
+      model: 'Hammering the hot steel into shape makes the spanner stronger and more impact resistant, so it will not snap when force is applied, whereas a casting can be brittle (1). It also gives a smoother finish than the rough texture of a sand casting, so less finishing is needed (1).',
+      weak: 'Forging is stronger.',
+      weakWhy: '0–1 mark. The comparison and consequence are missing.' }),
+    EX({ s: 2, n: '3(a)', tp: 'erg', q: 'A shelf in a school library must be reachable by 16-year-old pupils. Explain which data and which percentile you would use to set the height of the top shelf.', max: 2,
+      scheme: ['Vertical reach of a 16-year-old girl at the 5th percentile (smallest likely user group), 1854 mm.', 'Reason: if the smallest users can reach it, everyone taller can too.'],
+      rules: ['1 mark for the correct data and percentile.', '1 mark for the reason.'],
+      model: 'I would use the 5th percentile vertical reach of a 16-year-old girl, 1854 mm (1), because if the smallest users can reach the top shelf, every taller pupil can too (1).',
+      weak: 'The 95th percentile so it fits everyone.',
+      weakWhy: '0 marks. Reach uses the 5th percentile; at the 95th the smallest pupils could not reach.' }),
+    EX({ s: 2, n: '3(b)', tp: 'erg', q: 'Describe how physiology has influenced the design of a backpack for school.', max: 3,
+      scheme: ['Padded, wide shoulder straps spread the load, reducing pressure on the shoulders.', 'Two straps distribute weight evenly, reducing strain on the back and spine.', 'Waist or chest strap transfers weight to the hips, reducing back strain.', 'Padded, contoured back panel reduces pressure and allows airflow.', 'Lightweight materials reduce the overall load.'],
+      rules: ['1 mark per valid description.', 'Each must refer to reducing strain, pressure or fatigue.'],
+      model: 'Wide, padded shoulder straps spread the weight over a larger area, reducing pressure on the shoulders (1). Two straps spread the load evenly, so the spine is not pulled to one side, reducing back strain (1). A chest strap holds the bag close to the body, so less effort is needed to stay upright, reducing fatigue on longer walks (1).',
+      weak: 'It is comfortable and easy to carry.',
+      weakWhy: '0 marks. No reference to how strain or pressure is reduced.' }),
+    EX({ s: 2, n: '4', tp: 'aes', q: 'Explain how the target market and the location of use influence the aesthetics of a product. Use examples.', max: 3,
+      scheme: ['Target market: bright colours and rounded forms for children’s products.', 'Target market: premium finishes (chrome, leather) for a luxury market.', 'Target market: retro or fashionable styling for a particular age group.', 'Location: colour and finish chosen to harmonise with a kitchen or office.', 'Location: outdoor products in natural colours to blend in.', 'Location: high-visibility colours where safety matters.'],
+      rules: ['1 mark per valid explanation with an example.'],
+      model: 'Toys for young children use bright primary colours and rounded forms, because these attract children and look friendly and safe (1). A luxury watch uses polished steel and a leather strap, so it looks premium to buyers willing to pay a high price (1). Kitchen appliances are often sold in matching finishes, such as brushed steel, so they harmonise with the other appliances in the kitchen (1).',
+      weak: 'Different people like different looks.',
+      weakWhy: '0 marks. No influence explained and no example.' }),
+    EX({ s: 2, n: '5(a)', tp: 'env', q: 'Describe methods designers can use to limit the impact of products on the environment.', max: 4,
+      scheme: ['Design for recyclability: fewer/single materials, marked materials, easy separation.', 'Design for re-use: refillable, durable, repairable, modular.', 'Efficiency: less material, energy-efficient manufacture and use.', 'Sustainable/recycled materials.', 'Flat-pack / efficient transport.', 'Increase life expectancy.'],
+      rules: ['1 mark per valid description of a method with its effect.'],
+      model: 'Products can be designed so parts separate easily, using screws rather than glue, so each material can be recycled (1). Plastics can be marked with identification codes so they are sorted correctly (1). Products can be designed for re-use, such as a refillable cleaning spray bottle, so fewer bottles are thrown away (1). Energy-efficient features, such as LED lights and auto switch-off, reduce the electricity used over the product’s life (1).',
+      weak: 'Make it recyclable, eco-friendly and sustainable.',
+      weakWhy: '0 marks. Three labels and no methods.' }),
+    EX({ s: 2, n: '5(b)', tp: 'env', q: 'Discuss one positive and one negative impact of plastics on the environment.', max: 2,
+      scheme: ['Positive: lightweight, less fuel in transport.', 'Positive: packaging reduces food waste.', 'Positive: thermoplastics can be recycled.', 'Negative: made from oil, a finite resource.', 'Negative: very slow to break down, filling landfill.', 'Negative: pollution of seas, harm to wildlife, microplastics.'],
+      rules: ['1 mark for a positive, 1 mark for a negative, each explained.'],
+      model: 'Plastics are lightweight, so products weigh less and less fuel is used to transport them (1). However, they take hundreds of years to break down, so plastic that reaches the sea harms wildlife and becomes microplastics (1).',
+      weak: 'Plastic is bad because of pollution.',
+      weakWhy: '0–1 mark. One side, not explained.' })
+  ]
+};
+
+// --------------------------------------------------------------------- 7 NIGHT BEFORE
+const NIGHT = { id: 'night', n: 7, when: 'Night before the test', slot: '15 minutes', mins: 15, area: 'review', title: 'Night-before check' };
+
+const RULES = [
+  ['Materials', 'Name it exactly, then property → consequence for this product. Never just a property.'],
+  ['Material ID', 'Material type + test + what the result shows (magnet, colour, grain, float with density).'],
+  ['Processes', 'Process named against a part (1) + why it suits that part (1). Say CNC. “Moulding” is not a process.'],
+  ['Features', 'Draft, ejection marks, split line, flashing, wall thickness, thinning, shear marks, scorch marks, layer lines.'],
+  ['Ergonomics', 'All three areas. Body part ↔ product part. Physiology must reduce strain, fatigue or pressure. Psychology names the sense.'],
+  ['Percentiles', 'Clearance = 95th. Reach = 5th. Adjustable = 5th to 95th. Quote the data booklet value.'],
+  ['Aesthetics', 'Element + where on the product + effect. “It is silver” = 0.'],
+  ['Environment', 'Method + effect, about this product. “Eco-friendly” = 0. Discuss = both sides.'],
+  ['Mark count', 'One different point per mark. 6 marks = 6 points. No repetition.'],
+  ['Timing', 'About 1.7 minutes per mark.']
+];
+
+const NIGHT_LIST = [
+  'Read the ten rules above out loud once.',
+  'Clear anything left in Repeat Offenders, or at least read the full-marks answers.',
+  'Say the percentile rule and the three areas of ergonomics from memory.',
+  'Pack: two black pens, pencil, ruler, calculator, water.',
+  'Screens off by 22:00. Sleep does more for tomorrow than another hour of revision.'
+];
+
+const SVG = {
+  boss: `<figure class="fig"><svg viewBox="0 0 340 170" role="img" aria-label="Cross-section of an injection-moulded casing showing a boss, ribs, webs, draft angle and split line">
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+    <path d="M30 40 L36 140 L304 140 L310 40" />
+    <path d="M40 48 L45 132 L295 132 L300 48" opacity=".55"/>
+    <rect x="150" y="70" width="24" height="62" rx="2" fill="var(--accent-soft)"/>
+    <line x1="162" y1="74" x2="162" y2="128" stroke-dasharray="4 3"/>
+    <line x1="120" y1="132" x2="150" y2="100"/>
+    <line x1="204" y1="132" x2="174" y2="100"/>
+    <line x1="80" y1="132" x2="80" y2="98"/><line x1="96" y1="132" x2="96" y2="98"/>
+    <line x1="240" y1="132" x2="240" y2="98"/><line x1="256" y1="132" x2="256" y2="98"/>
+  </g>
+  <line x1="20" y1="40" x2="320" y2="40" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>
+  <g font-size="11" fill="currentColor" font-family="inherit">
+    <text x="232" y="32">split line</text>
+    <text x="146" y="62">boss</text>
+    <text x="178" y="92">webs</text>
+    <text x="64" y="92">ribs</text>
+    <text x="4" y="100">draft</text><text x="4" y="112">angle</text>
+    <text x="170" y="160">uniform wall thickness</text>
+  </g>
+  <path d="M22 104 L32 104" stroke="currentColor" stroke-width="1.5"/>
+</svg><figcaption>Section through an injection-moulded casing half. The boss takes a screw; webs support it; ribs stiffen the walls; the draft angle lets it leave the mould.</figcaption></figure>`
+};
+
+// ===================================================================== GAME DATA (flashcards, match, mark-it)
+const C = (e, f, b, w) => ({ e, f, b, w });
+const MK = (q, a, m, max, why) => ({ t: 'mark', q, a, m, max, why });
+const GAME = {
+  mat: {
+    rules: ['Name it exactly: “polypropylene”, not “plastic”', 'Property → so what for THIS product', 'ID test = material + test + result'],
+    cards: [
+      C('🧴', 'Flip-top shampoo lid', 'Polypropylene', 'Fatigue resistant, so it forms a living hinge'),
+      C('🎮', 'Games controller casing', 'ABS', 'Tough and impact resistant, so it won’t crack if dropped'),
+      C('🔌', 'Plug or wall socket', 'Urea formaldehyde', 'Thermoset insulator: won’t soften when warm'),
+      C('🍽️', 'Picnic plates', 'Melamine formaldehyde', 'Hard, scratch and heat resistant, food safe'),
+      C('💡', 'Clear light diffuser', 'Acrylic', 'Transparent and polishes well, but brittle'),
+      C('⚙️', 'Gears in a food mixer', 'Nylon', 'Self-lubricating and hard-wearing, so it runs quietly'),
+      C('🥛', 'Milk bottle', 'HDPE', 'Stiff, tough and food safe'),
+      C('🏠', 'Window frame or drainpipe', 'PVC', 'Weather resistant and durable'),
+      C('🛶', 'Canoe hull', 'GRP', 'Strong, light, one piece; won’t rot or rust'),
+      C('🚲', 'Racing bike frame', 'Carbon fibre', 'Lighter than steel of the same strength'),
+      C('🍴', 'Cutlery or a sink', 'Stainless steel', 'Won’t rust, hygienic'),
+      C('🪛', 'Drill bit', 'High-speed steel', 'Stays hard when hot from cutting'),
+      C('🗜️', 'Vice body or manhole cover', 'Cast iron', 'Casts well, strong in compression'),
+      C('🚪', 'Gold-coloured door handle', 'Brass', 'Corrosion resistant, attractive gold colour'),
+      C('⚡', 'Electrical wiring', 'Copper', 'Excellent electrical conductor'),
+      C('🪵', 'Outdoor bench slats', 'Oak', 'Durable outdoors; needs stainless fixings (tannic acid)'),
+      C('🧸', 'Wooden toy blocks', 'Beech', 'Fine smooth grain, no taste or smell'),
+      C('🔨', 'Hammer handle', 'Ash', 'Tough, absorbs shock'),
+      C('🗄️', 'Painted, CNC-routed drawer front', 'MDF', 'Routes with smooth edges and paints well'),
+      C('🧲', 'A magnet sticks to it', 'Ferrous metal (e.g. mild steel)', 'Aluminium, brass and copper are not attracted'),
+      C('💧', 'Plastic piece floats in water', 'Polypropylene or polythene', 'Less dense than water; ABS and acrylic sink')
+    ],
+    mark: [
+      MK('Explain why ABS suits a games controller casing.', 'ABS is tough and impact resistant.', 0, 1, 'Properties only, with no consequence for the controller.'),
+      MK('Explain why ABS suits a games controller casing.', 'ABS is impact resistant, so the casing won’t crack if the controller is dropped.', 1, 1, 'Property + real consequence for this product.'),
+      MK('Describe one method of identifying a plastic.', 'Do a float test.', 0, 1, 'Names a test but gives no material and no result.'),
+      MK('Describe one method of identifying a plastic.', 'Drop it in water: polypropylene floats because it is less dense than water, while ABS sinks.', 1, 1, 'Material + test + what the result shows.'),
+      MK('Explain why stainless steel suits a kitchen sink.', 'It doesn’t rust, so it survives daily contact with water, and it is hygienic, so bacteria don’t build up where food is washed.', 2, 2, 'Two different properties, each with a consequence for the sink.'),
+      MK('Explain why the materials suit a garden bench.', 'Oak is strong. Steel is strong.', 0, 2, 'Two properties, no consequences, and the second repeats the first.')
+    ]
+  },
+  proc: {
+    rules: ['Process + the part it made (1) + why it suits (1)', '“Moulding” alone is not a process', 'Features: draft, ejection marks, split line, thinning…'],
+    cards: [
+      C('🍾', 'Hollow bottle, scar across the base', 'Blow moulding', 'Thin uniform walls, pinch-off flashing'),
+      C('🛶', 'Large hollow kayak, thicker corners', 'Rotational moulding', 'Hollow form, walls thicker in the corners'),
+      C('🍫', 'Thin tray, thinner in deep pockets', 'Vacuum forming', 'Sheet stretches, so it thins at deep corners'),
+      C('📱', 'Casing with ejector marks, bosses and ribs', 'Injection moulding', 'Complex shape in one operation'),
+      C('🍳', 'Thermoset pan handle', 'Compression moulding', 'Heat and pressure cure thermosets'),
+      C('📏', 'Same profile all the way along', 'Extrusion', 'Forced through a shaped die'),
+      C('🚗', 'Zinc toy car with fine detail', 'Die casting', 'Metal with ejector marks and a smooth finish'),
+      C('🗜️', 'Rough, grainy vice body', 'Sand casting', 'Low volume, rough texture, machined faces'),
+      C('🔧', 'Very strong spanner', 'Drop forging', 'Hammered into shape: stronger, impact resistant'),
+      C('🚰', 'Sink from one sheet of steel', 'Press forming', 'Radiused bends and deep draws in sheet'),
+      C('⚪', 'Washers with shear marks', 'Piercing and blanking', 'Shiny band then rough band on the edge'),
+      C('🪑', 'Tubular chair frame, radiused corners', 'Bending', 'Formed from one tube, few joins'),
+      C('🏮', 'Intricate cut-outs, scorched edges', 'Laser cutting', 'Thin sheet, very accurate'),
+      C('🧩', 'Layer lines and support marks', '3D printing', 'Low volume, complex forms'),
+      C('🚿', 'Mirror finish on a tap', 'Chrome plating', 'Protective, hygienic, premium look'),
+      C('🚧', 'Dull “spangled” steel fence', 'Galvanising', 'Zinc coating protects steel outdoors'),
+      C('🧺', 'Thick soft coating on a wire rack', 'Plastic dip coating', 'Protective, coloured, soft to grip'),
+      C('📐', 'Slight taper so the part leaves the mould', 'Draft angle', 'Stops the part sticking in the mould'),
+      C('🔩', 'Post moulded inside a casing to take a screw', 'Boss', 'Aids assembly and locates parts'),
+      C('〰️', 'Thin wall that stiffens a casing', 'Rib', 'Strength without thick walls, so less distortion')
+    ],
+    mark: [
+      MK('Name a process used for the casing and explain why it is suitable.', 'Moulding, because it is plastic.', 0, 2, '“Moulding” is not a specific process, and “because it is plastic” is not a reason.'),
+      MK('Name a process used for the casing and explain why it is suitable.', 'The casing is injection moulded, because the bosses and ribs can be formed in one operation, repeatably.', 2, 2, 'Process against the part (1) + a real reason it suits (1).'),
+      MK('Describe one identifying feature of a blow-moulded bottle.', 'It is made of plastic.', 0, 1, 'That is a material, not a feature of the process.'),
+      MK('Describe one identifying feature of a blow-moulded bottle.', 'A small pinch-off scar across the base where the mould closed.', 1, 1, 'A visible feature of the process.'),
+      MK('Explain why a spanner is drop forged.', 'Forging makes it stronger and more impact resistant, so it won’t snap when force is applied.', 1, 1, 'Benefit + consequence for the spanner.'),
+      MK('Explain the purpose of ribs on a casing.', 'To make it look better.', 0, 1, 'Ribs stiffen the walls without making them thick.')
+    ]
+  },
+  erg: {
+    rules: ['Cover all 3: anthropometrics, physiology, psychology', 'Body part ↔ product part', 'Physiology = reduces strain, fatigue or pressure'],
+    cards: [
+      C('🚪', 'Height of a doorway', '95th percentile', 'Clearance: the largest users must fit'),
+      C('📚', 'Height of the top shelf', '5th percentile', 'Reach: the smallest users must reach'),
+      C('🪑', 'Office chair seat height', '5th to 95th percentile', 'Adjustable: covers 90% of users'),
+      C('✋', 'Handle diameter based on grip diameter', 'Anthropometrics', 'Body size sets product size'),
+      C('🎒', 'Padded straps spread the load', 'Physiology', 'Reduces pressure on the shoulders'),
+      C('🔔', 'Microwave beeps when the food is ready', 'Psychology: sound', 'The senses tell the user something'),
+      C('🛑', 'Red emergency stop button', 'Psychology: look', 'Red signals danger, so the user reacts fast'),
+      C('🔋', 'Battery under the handle for balance', 'Physiology', 'Reduces strain on the wrist'),
+      C('🧤', 'Gap inside a handle for a gloved hand', '95th percentile hand breadth', 'A clearance, so use the largest'),
+      C('📏', 'Adult male grip diameter, 50th percentile', '47 mm', 'From the data booklet'),
+      C('📏', 'Adult female popliteal height, 5th percentile', '370 mm', 'Lowest seat height for adults'),
+      C('📏', 'Adult male popliteal height, 95th percentile', '499 mm', 'Highest seat height for adults'),
+      C('📏', 'Adult male hand thickness, 95th percentile', '34 mm', 'Gap behind a door handle'),
+      C('🖱️', 'Clicking switch confirms it is on', 'Psychology: sound and feel', 'Feedback through the senses'),
+      C('🚫', '“The handle is easy to use”', '0 marks', 'Say how it reduces strain or fatigue')
+    ],
+    mark: [
+      MK('Describe how physiology has influenced a bike saddle.', 'The saddle is comfortable.', 0, 1, 'No reference to reducing pressure, strain or fatigue.'),
+      MK('Describe how physiology has influenced a bike saddle.', 'The padded saddle spreads the rider’s weight, reducing pressure on long rides.', 1, 1, 'Feature + reduces pressure.'),
+      MK('Describe how anthropometrics has influenced a computer mouse.', 'It fits your hand.', 0, 1, 'No specific body part linked to a product part.'),
+      MK('Describe how anthropometrics has influenced a computer mouse.', 'Its width is based on adult hand breadth, so the palm rests on it.', 1, 1, 'Body part (hand breadth) ↔ product part (width).'),
+      MK('Which percentile sets a doorway height, and why?', '95th percentile height, so the tallest users can walk through without ducking.', 2, 2, 'Correct percentile + reason.'),
+      MK('Which percentile sets a top-shelf height, and why?', '95th percentile, so it fits everyone.', 0, 2, 'Reach uses the 5th percentile, so the smallest users can reach.')
+    ]
+  },
+  aes: {
+    rules: ['Element + where on the product + effect', '“It is silver” = 0', 'Link to target market or location'],
+    cards: [
+      C('🍳', 'Kettle and toaster in matching finish', 'Harmony', 'Elements match, so they look like a set'),
+      C('🛑', 'Red button on a grey machine', 'Contrast', 'Deliberate difference draws attention'),
+      C('⚖️', 'Equal visual weight on both sides', 'Balance', 'Symmetry looks stable and calm'),
+      C('📏', 'Size of the shade compared with the base', 'Proportion', 'Parts relative to each other'),
+      C('🪨', 'Ribbed, matt or grainy surface', 'Texture', 'How it looks and feels'),
+      C('🧊', 'Overall 3D shape: curved or angular', 'Form', 'Organic or geometric'),
+      C('🚗', 'Car door closes with a solid “thud”', 'Sound', 'Makes it feel well built and high quality'),
+      C('🚿', 'Chrome-plated tap', 'Premium, modern look', 'Mirror finish reflects light'),
+      C('🌳', 'Oak table with visible grain', 'Warm, traditional look', 'Natural material'),
+      C('🎨', 'Injection-moulded coloured casing', 'Colour and texture moulded in', 'No painting needed'),
+      C('🧒', 'Bright colours, rounded corners', 'Appeals to children', 'Friendly and safe-looking'),
+      C('🏡', 'Product matches a modern white kitchen', 'Location of use', 'Harmonises with its setting'),
+      C('🚫', '“The lamp is silver”', '0 marks', 'Add where it is and the effect it creates')
+    ],
+    mark: [
+      MK('Describe how aesthetics has influenced the lamp.', 'The lamp is silver.', 0, 1, 'States a colour with no effect.'),
+      MK('Describe how aesthetics has influenced the lamp.', 'The brass bolts contrast with the pale birch, drawing attention to the joints.', 1, 1, 'Element (contrast) + where + effect.'),
+      MK('Describe how aesthetics has influenced the speaker.', 'It looks nice and modern.', 0, 1, 'No element, no part, no specific effect.'),
+      MK('Describe how aesthetics has influenced the toy.', 'The rounded form looks friendly, appealing to young children, and the bright red colour makes it stand out on the shelf.', 2, 2, 'Two elements, each with an effect.'),
+      MK('Describe how aesthetics has influenced the wooden lamp.', 'It is wooden, so it has a wood texture.', 0, 1, 'The 2026 marking instructions gave this 0: no effect described.')
+    ]
+  },
+  env: {
+    rules: ['Method + effect, about THIS product', '“Eco-friendly” = 0', 'Discuss = both positive and negative'],
+    cards: [
+      C('🪛', 'Screws instead of glue', 'Design for recyclability', 'Parts separate, so materials can be recycled'),
+      C('♻️', 'Plastic ID codes on parts', 'Design for recyclability', 'Sorted into the right recycling stream'),
+      C('🧴', 'Refill pouches for a spray bottle', 'Design for re-use', 'The bottle is kept, so less waste'),
+      C('🔋', 'Replaceable battery', 'Longer life / repair', 'Fix the part, don’t bin the product'),
+      C('💡', 'LEDs and auto switch-off', 'Efficiency in use', 'Less electricity over its life'),
+      C('🧩', 'Parts nested closely on a sheet', 'Efficient manufacture', 'Less offcut waste'),
+      C('📦', 'Sold flat-packed', 'Efficient transport', 'More per lorry, less fuel'),
+      C('🌲', 'FSC-certified timber', 'Renewable material', 'Forests are replanted'),
+      C('🥫', 'Aluminium drinks can', 'Recycled again and again', 'But extraction uses huge energy'),
+      C('🛢️', 'Plastics: the downside', 'Oil-based and long-lasting', 'Landfill, sea pollution, microplastics'),
+      C('🪶', 'Plastics: the upside', 'Lightweight', 'Less fuel used in transport'),
+      C('🗑️', 'Planned obsolescence', 'More waste and resources', 'Replacements need new materials and energy'),
+      C('🚫', '“It is eco-friendly”', '0 marks', 'Say the method and its effect')
+    ],
+    mark: [
+      MK('Describe one way the vacuum cleaner’s environmental impact has been reduced.', 'It is eco-friendly.', 0, 1, 'No method, no effect.'),
+      MK('Describe one way the vacuum cleaner’s environmental impact has been reduced.', 'The battery clips in, so it can be replaced instead of the whole vacuum being thrown away.', 1, 1, 'Method + effect, about this product.'),
+      MK('Describe one way to reduce the toaster’s environmental impact.', 'Make it recyclable.', 0, 1, 'A label, not a method.'),
+      MK('Discuss one positive and one negative impact of plastics.', 'Plastics are light, so less fuel is used in transport, but they take hundreds of years to break down in landfill.', 2, 2, 'One explained positive and one explained negative.'),
+      MK('Discuss one positive and one negative impact of plastics.', 'Plastic causes pollution and is made from oil.', 1, 2, 'Both points are negatives, so only 1 mark: there is no positive.')
+    ]
+  }
+};
+SESSIONS.forEach(X => { X.g = GAME[X.id]; });
+</script>
+<script>
+(function(){
+'use strict';
+const KEY = 'hdm-weekend-v1';
+const $ = (s, el) => (el || document).querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function blank(){ return { theme: 'auto', testDate: '', ans: {}, texts: {}, open: {}, stage: {}, done: {}, hw: false, night: {}, qfBest: 0, fc: {}, match: {}, tstart: 0, tab: 'plan', view: null }; }
+let S = blank();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); } catch (e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+const ALL = [...SESSIONS, TEST, NIGHT];
+const byId = id => ALL.find(x => x.id === id);
+const QIDX = {};
+SESSIONS.forEach(X => {
+  X.spot.forEach((q, i) => { q.id = X.id + '-s' + i; q.sid = X.id; q.tp = X.id; q.kind = 'spot'; QIDX[q.id] = q; });
+  X.exam.forEach((q, i) => { q.id = X.id + '-e' + i; q.sid = X.id; q.tp = X.id; q.kind = 'exam'; QIDX[q.id] = q; });
+  X.g.mark.forEach((q, i) => { q.id = X.id + '-m' + i; q.sid = X.id; q.tp = X.id; q.kind = 'mark'; QIDX[q.id] = q; });
+  X.boss.id = X.id + '-b'; X.boss.sid = X.id; X.boss.tp = X.id; X.boss.kind = 'boss'; QIDX[X.boss.id] = X.boss;
+});
+TEST.questions.forEach(q => { q.id = 'test-' + q.n; q.sid = 'test'; q.kind = 'test'; QIDX[q.id] = q; });
+const SPOTPOOL = SESSIONS.flatMap(X => X.spot);
+
+function stagesFor(X){ return X.id === 'test' ? ['Test'] : X.id === 'night' ? ['Rules', 'Repeat Offenders', 'Checklist'] : ['Flashcards', 'Match', 'Spot it', 'Mark it', 'Exam']; }
+function qMax(q){ return q.t === 'ext' ? q.max : 1; }
+function sessQs(X){ return X.id === 'test' ? TEST.questions : X.id === 'night' ? [] : [...X.spot, ...X.g.mark, ...X.exam, X.boss]; }
+function score(X){ let g = 0, m = 0, n = 0; const qs = sessQs(X); qs.forEach(q => { const a = S.ans[q.id]; if (a) { g += a.got; m += a.max; n++; } }); return { got: g, max: m, answered: n, total: qs.length }; }
+function offenders(){ return Object.keys(S.ans).filter(id => QIDX[id] && S.ans[id].got < S.ans[id].max).map(id => QIDX[id]); }
+function nextId(){ for (const X of ALL) if (!S.done[X.id]) return X.id; return null; }
+function xp(){ let x = 0; Object.keys(S.ans).forEach(id => { x += S.ans[id].got * 10; }); Object.values(S.fc).forEach(a => { x += a.length * 2; }); Object.values(S.match).forEach(m => { x += m.rounds * 20; }); return x; }
+function stars(X){
+  if (!X.g) return '';
+  const sp = X.spot.filter(q => S.ans[q.id]), ok = sp.filter(q => S.ans[q.id].got).length;
+  const n = (S.match[X.id] ? 1 : 0) + (sp.length === X.spot.length && ok / sp.length >= 0.75 ? 1 : 0) + (S.done[X.id] ? 1 : 0);
+  return '<span class="stars">' + '★'.repeat(n) + '☆'.repeat(3 - n) + '</span>';
+}
+function confetti(){ const em = ['🎉', '⭐', '✨', '🏆', '💥']; for (let i = 0; i < 28; i++) { const d = document.createElement('div'); d.className = 'confetti'; d.textContent = em[i % em.length]; d.style.left = Math.random() * 100 + 'vw'; d.style.animationDelay = Math.random() * 0.5 + 's'; document.body.appendChild(d); setTimeout(() => d.remove(), 2400); } }
+function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function grade(p){ return p >= 70 ? 'A' : p >= 60 ? 'B' : p >= 50 ? 'C' : p >= 40 ? 'D' : 'No award'; }
+function topicStats(){
+  return SESSIONS.map(X => {
+    let g = 0, m = 0;
+    Object.keys(S.ans).forEach(id => { const q = QIDX[id]; if (q && q.tp === X.id) { g += S.ans[id].got; m += S.ans[id].max; } });
+    return { id: X.id, title: X.title, got: g, max: m, pct: m ? Math.round(100 * g / m) : null };
+  });
+}
+
+function seeded(str){ let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 10000) / 10000; }; }
+function order(q, salt){ const r = seeded(q.id + (salt || '')), a = q.o.map((_, i) => i); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function applyTheme(){ const r = document.documentElement; if (S.theme === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', S.theme); }
+applyTheme();
+$('#themeBtn').onclick = () => { S.theme = S.theme === 'auto' ? 'light' : S.theme === 'light' ? 'dark' : 'auto'; applyTheme(); save(); toast('Theme: ' + (S.theme === 'auto' ? 'follow device' : S.theme)); };
+let tt; function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 1800); }
+
+function today(){ const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function parse(s){ const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function chips(){
+  let cd;
+  if (!S.testDate) cd = '<b>Set test date</b> in settings';
+  else { const left = Math.round((parse(S.testDate) - today()) / 86400000); cd = left > 1 ? '<b>' + left + '</b> days to test' : left === 1 ? '<b>Test tomorrow</b>' : left === 0 ? '<b>Test today</b>' : 'Test done'; }
+  const done = SESSIONS.filter(X => S.done[X.id]).length;
+  $('#chips').innerHTML = '<span class="chip">' + cd + '</span><span class="chip">⚡ <b>' + xp() + '</b> XP</span><span class="chip"><b>' + done + '</b>/5 topics</span><span class="chip">Test <b>' + (S.done.test ? Math.round(100 * score(TEST).got / TEST.total) + '%' : 'not sat') + '</b></span>';
+}
+
+const ICON = {
+  plan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  quick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>',
+  off: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg>',
+  prog: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'
+};
+const TABS = [['plan', 'Weekend'], ['quick', 'Quick-fire'], ['off', 'Offenders'], ['prog', 'Progress']];
+function tabs(){
+  const n = offenders().length;
+  $('#tabs').innerHTML = TABS.map(([k, l]) => '<button data-tab="' + k + '"' + (S.tab === k && !S.view ? ' aria-current="page"' : '') + '>' + ICON[k] + (k === 'off' && n ? '<span class="badge">' + n + '</span>' : '') + '<span>' + l + '</span></button>').join('');
+  $('#tabs').querySelectorAll('button').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; S.view = null; save(); render(); window.scrollTo(0, 0); });
+}
+
+function render(){
+  chips(); tabs();
+  const m = $('#main');
+  if (S.view) return renderSession(m, S.view);
+  ({ plan: renderPlan, quick: renderQuick, off: renderOffenders, prog: renderProgress })[S.tab](m);
+}
+function open(id){ S.view = id; save(); render(); window.scrollTo(0, 0); }
+function areaName(a){ return { mm: 'Materials & manufacture', design: 'Design', impact: 'Impact', paper: 'Assessment', review: 'Review' }[a]; }
+
+// ---------------- PLAN
+function renderPlan(m){
+  const nx = nextId();
+  let h = '<h1>Test weekend</h1>';
+  h += '<div class="card"><h3>What your teacher said to revise</h3><ul>' + TEACHER_TOPICS.map(t => '<li>' + t + '</li>').join('') + '</ul><p class="small muted">No holistic question in this test. Practising extended answers still helps you structure responses, so the boss questions are kept.</p></div>';
+  if (nx && nx !== 'night') {
+    const X = byId(nx);
+    h += '<button class="btn primary block" id="go">' + (S.stage[nx] ? 'Continue: ' : 'Start: ') + esc(X.title) + '</button>';
+  }
+  let lastWhen = '';
+  h += '<div class="daylist">';
+  ALL.forEach(X => {
+    if (X.when !== lastWhen) { h += '</div><div class="daylabel">' + X.when + '</div><div class="daylist">'; lastWhen = X.when; }
+    const done = S.done[X.id], sc = score(X);
+    const r = done ? (sc.max ? sc.got + '/' + sc.max : '✓') : (X.id === nx ? 'Next' : X.mins + ' min');
+    h += '<button class="dayrow' + (done ? ' done' : '') + (X.id === nx ? ' next' : '') + '" data-id="' + X.id + '"><span class="n">' + (done ? '✓' : X.n) + '</span><span class="t">' + esc(X.title) + '<br><span class="s">' + X.slot + ' · ' + areaName(X.area) + '</span></span><span class="r">' + r + (X.g ? '<br>' + stars(X) : '') + '</span></button>';
+    if (X.after) h += '<div class="small muted" style="padding:2px 12px 4px">⏸ ' + X.after + '</div>';
+    if (X.id === 'test') {
+      h += '<label class="dayrow' + (S.hw ? ' done' : '') + '" style="cursor:pointer"><span class="n">' + (S.hw ? '✓' : '+') + '</span><span class="t">Homework Exercise 4<br><span class="s">After the practice test, or Monday after school · tick when finished</span></span><span class="r"><input type="checkbox" id="hw"' + (S.hw ? ' checked' : '') + ' style="width:22px;height:22px;accent-color:var(--accent)"></span></label>';
+    }
+  });
+  h += '</div>';
+  h += '<p class="small muted" style="margin-top:14px">Times are a suggestion: move sessions around, but keep the practice test until all five topics are done, and take a 15–30 minute break between sessions. Progress saves on this device. <a href="./" style="color:var(--accent)">Open the full 21-day D&amp;M app</a>.</p>';
+  m.innerHTML = h;
+  if ($('#go')) $('#go').onclick = () => open(nx);
+  m.querySelectorAll('.dayrow[data-id]').forEach(b => b.onclick = () => open(b.dataset.id));
+  $('#hw').onchange = e => { S.hw = e.target.checked; save(); render(); };
+}
+
+// ---------------- SESSION VIEW
+function renderSession(m, id){
+  const X = byId(id), ST = stagesFor(X);
+  const st = Math.min(S.stage[id] || 0, ST.length - 1);
+  let h = '<button class="btn" id="back" style="min-height:36px;padding:6px 12px">← Weekend</button>';
+  h += '<p class="muted small" style="margin-top:12px">' + X.when + ' · ' + X.slot + ' · about ' + X.mins + ' min' + (S.done[id] ? ' · <b style="color:var(--good)">complete</b>' : '') + '</p><h1>' + esc(X.title) + '</h1>';
+  if (ST.length > 1) h += '<div class="stagebar" style="grid-template-columns:repeat(' + ST.length + ',1fr)">' + ST.map((s, i) => '<button data-st="' + i + '" class="' + (i < st ? 'on' : i === st ? 'cur on' : '') + '"><div class="bar"></div><span class="lbl">' + s + '</span></button>').join('') + '</div>';
+  h += '<div id="stage"></div>';
+  m.innerHTML = h;
+  $('#back').onclick = () => { S.view = null; S.tab = 'plan'; save(); render(); window.scrollTo(0, 0); };
+  m.querySelectorAll('.stagebar button').forEach(b => b.onclick = () => { S.stage[id] = +b.dataset.st; save(); render(); window.scrollTo(0, 0); });
+  const box = $('#stage'), name = ST[st];
+  if (name === 'Flashcards') stageCards(box, X);
+  else if (name === 'Match') stageMatch(box, X);
+  else if (name === 'Spot it') stageSpot(box, X);
+  else if (name === 'Mark it') stageMark(box, X);
+  else if (name === 'Exam') stageBoss(box, X);
+  else if (name === 'Test') stageTest(box);
+  else if (name === 'Rules') stageRules(box);
+  else if (name === 'Repeat Offenders') { box.innerHTML = '<p>Everything you dropped a mark on this weekend. Read the full-marks answer, then retry it.</p><div id="offl"></div>'; offList($('#offl')); }
+  else if (name === 'Checklist') stageChecklist(box);
+  const nav = document.createElement('div'); nav.className = 'row'; nav.style.marginTop = '18px';
+  if (st > 0) { const b = document.createElement('button'); b.className = 'btn'; b.textContent = '← ' + ST[st - 1]; b.onclick = () => { S.stage[id] = st - 1; save(); render(); window.scrollTo(0, 0); }; nav.appendChild(b); }
+  if (st < ST.length - 1) { const b = document.createElement('button'); b.className = 'btn primary'; b.textContent = ST[st + 1] + ' →'; b.onclick = () => { S.stage[id] = st + 1; save(); render(); window.scrollTo(0, 0); }; nav.appendChild(b); }
+  if (nav.children.length) box.after(nav);
+}
+
+function cardHTML(k){
+  let h = '<div class="card"><h3>' + k.h + '</h3>';
+  if (k.p) h += k.p.length > 1 ? '<ul>' + k.p.map(x => '<li>' + x + '</li>').join('') + '</ul>' : '<p>' + k.p[0] + '</p>';
+  if (k.table) h += '<table class="t' + (k.num ? ' num' : '') + '"><tr>' + k.table[0].map(c => '<th>' + c + '</th>').join('') + '</tr>' + k.table.slice(1).map(r => '<tr>' + r.map(c => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</table>';
+  if (k.note) h += '<p class="small muted" style="margin-top:8px">' + k.note + '</p>';
+  if (k.svg && SVG[k.svg]) h += SVG[k.svg];
+  return h + '</div>';
+}
+function modelHTML(mo){
+  return '<div class="card model"><h3>Model answer, annotated <span class="mk">' + mo.max + ' marks</span></h3><p class="q">' + mo.q + '</p><p>' + mo.parts.map(([t, note]) => '<span class="seg earn">' + t + '</span> <span class="note">✓ ' + note + '</span>').join('') + '</p><p class="small muted">Each highlight is one mark earned.</p></div>';
+}
+function cheatHTML(X){ return '<details class="cheat"><summary>📖 Cheat sheet: full notes and a model answer</summary>' + X.learn.map(cardHTML).join('') + modelHTML(X.model) + '</details>'; }
+const FCQ = {};
+function stageCards(box, X){
+  const G = X.g, known = S.fc[X.id] || [];
+  if (!FCQ[X.id]) FCQ[X.id] = shuffle(G.cards.map((_, i) => i).filter(i => known.indexOf(i) < 0));
+  const q = FCQ[X.id], n = G.cards.length;
+  let h = '<div class="pills">' + G.rules.map(r => '<span class="pill">' + r + '</span>').join('') + '</div>';
+  h += '<div class="progress" style="height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin:12px 0 4px"><i style="display:block;height:100%;background:var(--good);width:' + (100 * known.length / n) + '%"></i></div><p class="small muted">' + known.length + ' of ' + n + ' known · guess the answer, then tap the card</p>';
+  if (!q.length) h += '<div class="card" style="text-align:center"><div style="font-size:48px">🎉</div><h3>All ' + n + ' cards known</h3><p class="muted small">Next: beat the clock in Match.</p><button class="btn" id="fcreset">Shuffle and go again</button></div>';
+  else {
+    const c = G.cards[q[0]];
+    h += '<div class="flip" id="fl"><div class="in"><div class="face"><div class="emo">' + c.e + '</div><div class="big">' + c.f + '</div><div class="hint">Say your answer, then tap to flip</div></div><div class="face back"><div class="big">' + c.b + '</div><div class="sub">' + c.w + '</div></div></div></div>';
+    h += '<div class="row"><button class="btn" id="again">🔁 Again</button><button class="btn primary" id="got">✓ Got it</button></div>';
+  }
+  h += cheatHTML(X);
+  box.innerHTML = h;
+  const fl = $('#fl'); if (fl) fl.onclick = () => fl.classList.toggle('on');
+  if ($('#got')) $('#got').onclick = () => { const i = q.shift(); S.fc[X.id] = known.concat([i]); save(); if (!q.length) confetti(); render(); };
+  if ($('#again')) $('#again').onclick = () => { q.push(q.shift()); render(); };
+  if ($('#fcreset')) $('#fcreset').onclick = () => { S.fc[X.id] = []; FCQ[X.id] = null; save(); render(); };
+}
+const MT = {};
+function newMatch(X){
+  const seen = new Set(), pick = [];
+  shuffle(X.g.cards).forEach(c => { if (pick.length < 5 && !seen.has(c.b)) { seen.add(c.b); pick.push(c); } });
+  MT[X.id] = { p: pick, L: shuffle([0, 1, 2, 3, 4]), R: shuffle([0, 1, 2, 3, 4]), sel: null, ok: [], miss: 0, bad: null, t0: Date.now() };
+}
+function stageMatch(box, X){
+  if (!MT[X.id]) newMatch(X);
+  const M = MT[X.id], rec = S.match[X.id];
+  let h = '<p class="small muted">Tap a card on the left, then its match on the right. Fast and accurate wins.' + (rec ? ' Best: <b>' + rec.best + 's</b> · ' + rec.rounds + ' round' + (rec.rounds > 1 ? 's' : '') + ' played.' : '') + '</p>';
+  if (M.ok.length === 5) {
+    const t = M.secs;
+    h += '<div class="card" style="text-align:center"><div style="font-size:48px">' + (M.miss === 0 ? '🏆' : '✅') + '</div><h3>Round complete</h3><div class="bigstat"><div><b>' + t + 's</b><span class="small muted">time</span></div><div><b>' + M.miss + '</b><span class="small muted">mistakes</span></div><div><b>+20</b><span class="small muted">XP</span></div></div><button class="btn primary block" id="mnew">Play another round</button></div>';
+  } else {
+    h += '<div class="match"><div class="col">' + M.L.map(i => { const c = M.p[i], ok = M.ok.indexOf(i) >= 0, sel = M.sel && M.sel.s === 'L' && M.sel.i === i; return '<button class="tile' + (ok ? ' ok' : sel ? ' sel' : '') + (M.bad && M.bad.s === 'L' && M.bad.i === i ? ' bad' : '') + '" data-s="L" data-i="' + i + '"' + (ok ? ' disabled' : '') + '><span class="te">' + c.e + '</span>' + c.f + '</button>'; }).join('') + '</div>';
+    h += '<div class="col">' + M.R.map(i => { const c = M.p[i], ok = M.ok.indexOf(i) >= 0, sel = M.sel && M.sel.s === 'R' && M.sel.i === i; return '<button class="tile' + (ok ? ' ok' : sel ? ' sel' : '') + (M.bad && M.bad.s === 'R' && M.bad.i === i ? ' bad' : '') + '" data-s="R" data-i="' + i + '"' + (ok ? ' disabled' : '') + '>' + c.b + '</button>'; }).join('') + '</div></div>';
+  }
+  box.innerHTML = h;
+  box.querySelectorAll('.tile[data-s]').forEach(b => b.onclick = () => {
+    const s = b.dataset.s, i = +b.dataset.i; M.bad = null;
+    if (!M.sel || M.sel.s === s) { M.sel = { s, i }; render(); return; }
+    if (M.sel.i === i) {
+      M.ok.push(i); M.sel = null;
+      if (M.ok.length === 5) {
+        M.secs = Math.round((Date.now() - M.t0) / 1000);
+        const r = S.match[X.id] || { rounds: 0, best: 999 }; r.rounds++; r.best = Math.min(r.best, M.secs); S.match[X.id] = r; save(); confetti();
+      }
+    } else { M.miss++; M.bad = { s, i }; M.sel = null; setTimeout(() => { if (M.bad) { M.bad = null; render(); } }, 450); }
+    render();
+  });
+  if ($('#mnew')) $('#mnew').onclick = () => { newMatch(X); render(); };
+}
+function stageMark(box, X){
+  const qs = X.g.mark, done = qs.filter(q => S.ans[q.id]), ok = done.filter(q => S.ans[q.id].got).length;
+  let h = '<p class="small muted">Be the examiner. How many marks does each answer get? <b>' + ok + '/' + done.length + '</b> judged correctly.</p>';
+  qs.forEach((q, n) => {
+    const a = S.ans[q.id];
+    h += '<div class="card" id="c-' + q.id + '"><div class="small muted">Answer ' + (n + 1) + ' of ' + qs.length + '</div><div class="q">' + q.q + ' <span class="mk">' + q.max + ' mark' + (q.max > 1 ? 's' : '') + '</span></div><div class="answer">“' + q.a + '”</div><div class="marks">';
+    for (let i = 0; i <= q.max; i++) { let cls = ''; if (a) { if (i === q.m) cls = ' style="background:var(--good-soft);border-color:var(--good)"'; else if (a.choice === i) cls = ' style="background:var(--bad-soft);border-color:var(--bad)"'; } h += '<button data-mark="' + q.id + '" data-v="' + i + '"' + cls + (a ? ' disabled' : '') + '>' + i + '</button>'; }
+    h += '</div>';
+    if (a) h += '<div class="why">' + (a.got ? '<b class="ok">Spot on.</b> ' : '<b class="no">It gets ' + q.m + '.</b> ') + q.why + '</div>';
+    h += '</div>';
+  });
+  box.innerHTML = h;
+  box.querySelectorAll('[data-mark]').forEach(b => b.onclick = () => { const q = QIDX[b.dataset.mark], v = +b.dataset.v; S.ans[q.id] = { got: v === q.m ? 1 : 0, max: 1, choice: v }; save(); refresh(q.id); });
+}
+
+function mcqHTML(q, label){
+  const a = S.ans[q.id], ord = order(q);
+  let h = '<div class="card" id="c-' + q.id + '"><div class="small muted">' + label + '</div><div class="q">' + q.q + '</div><div class="opts">';
+  ord.forEach(i => {
+    let cls = 'opt';
+    if (a) { if (i === 0) cls += ' right'; else if (a.choice === i) cls += ' wrong'; }
+    h += '<button class="' + cls + '" data-q="' + q.id + '" data-i="' + i + '"' + (a ? ' disabled' : '') + '>' + q.o[i] + '</button>';
+  });
+  h += '</div>';
+  if (a) h += '<div class="why">' + (a.got ? '<b class="ok">Correct.</b> ' : '<b class="no">Not quite. Added to Repeat Offenders.</b> ') + q.why + '</div>';
+  return h + '</div>';
+}
+function extHTML(q, label){
+  const a = S.ans[q.id], opened = a || S.open[q.id];
+  let h = '<div class="card" id="c-' + q.id + '"><div class="small muted">' + label + '</div><div class="q">' + q.q + ' <span class="mk">' + q.max + ' mark' + (q.max > 1 ? 's' : '') + '</span></div>';
+  h += '<textarea data-t="' + q.id + '" placeholder="Type your answer first. One clear, different point per mark.">' + esc(S.texts[q.id] || '') + '</textarea>';
+  if (!opened) h += '<button class="btn block" data-open="' + q.id + '" style="margin-top:8px">Reveal marking scheme</button>';
+  else {
+    h += '<div class="scheme"><h4>Marking scheme</h4><ul>' + q.scheme.map(s => '<li>' + s + '</li>').join('') + '</ul>';
+    if (q.rules) h += '<div class="box rule">' + q.rules.map(r => '• ' + r).join('<br>') + '</div>';
+    h += '<h4>Full-marks answer</h4><div class="box full">' + q.model + '</div>';
+    h += '<h4>Weak answer</h4><div class="box weak"><i>“' + q.weak + '”</i><br><b>Why it loses marks:</b> ' + q.weakWhy + '</div>';
+    h += '<h4>How many marks did you earn?</h4><div class="marks">';
+    for (let i = 0; i <= q.max; i++) h += '<button data-mk="' + q.id + '" data-v="' + i + '" class="' + (a && a.got === i ? 'sel' : '') + '">' + i + '</button>';
+    h += '</div>';
+    if (a) h += '<p class="small" style="margin-top:8px">' + (a.got === q.max ? '<b style="color:var(--good)">Full marks.</b>' : 'Saved: ' + a.got + '/' + q.max + '. Now in Repeat Offenders.') + '</p>';
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function wire(box){
+  box.querySelectorAll('.opt[data-q]').forEach(b => b.onclick = () => { const q = QIDX[b.dataset.q], i = +b.dataset.i; S.ans[q.id] = { got: i === 0 ? 1 : 0, max: 1, choice: i }; save(); refresh(q.id); });
+  box.querySelectorAll('textarea[data-t]').forEach(t => t.oninput = () => { S.texts[t.dataset.t] = t.value; save(); });
+  box.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { S.open[b.dataset.open] = 1; save(); refresh(b.dataset.open); });
+  box.querySelectorAll('[data-mk]').forEach(b => b.onclick = () => { const q = QIDX[b.dataset.mk]; S.ans[q.id] = { got: +b.dataset.v, max: q.max }; save(); refresh(q.id); });
+}
+function refresh(id){ const y = document.getElementById('c-' + id); const top = y ? y.getBoundingClientRect().top : 0; render(); const z = document.getElementById('c-' + id); if (z) window.scrollBy(0, z.getBoundingClientRect().top - top); }
+
+function stageSpot(box, X){
+  const sc = X.spot.filter(q => S.ans[q.id]).length, ok = X.spot.filter(q => S.ans[q.id] && S.ans[q.id].got).length;
+  let h = '<p class="muted small">Rapid recognition: ' + X.spot.length + ' questions. Answer before you think too long. Score so far: <b>' + ok + '/' + sc + '</b>.</p>';
+  X.spot.forEach((q, i) => { h += mcqHTML(q, (q.pick ? 'Which answer earns the mark?' : 'Spot it ' + (i + 1))); });
+  box.innerHTML = h; wire(box);
+}
+function stageExam(box, X){
+  let h = '<p class="muted small">Write your answer, then reveal the scheme and mark yourself honestly. Be strict: if it only states a property or names a feature, it does not get the mark.</p>';
+  X.exam.forEach((q, i) => { h += extHTML(q, 'Exam question ' + (i + 1)); });
+  box.innerHTML = h; wire(box);
+}
+function stageBoss(box, X){
+  const q = X.boss, a = S.ans[q.id];
+  let h = '<p class="small muted">Real exam-style questions. Type your answer, reveal the scheme, mark yourself. Do at least the boss question.</p>';
+  X.exam.forEach((e, i) => { h += extHTML(e, 'Exam question ' + (i + 1)); });
+  h += '<div class="alert">👑 Boss question: the extended answer that separates an A from a B. Plan one point per mark first.</div>';
+  h += extHTML(q, 'Boss question');
+  const sc = score(X);
+  if (S.done[X.id]) h += '<div class="alert good">Session complete: ' + sc.got + '/' + sc.max + ' marks.</div>';
+  else h += '<button class="btn primary block" id="finish"' + (a ? '' : ' disabled') + '>' + (a ? 'Complete session' : 'Mark the boss question to finish') + '</button>';
+  box.innerHTML = h; wire(box);
+  const f = $('#finish'); if (f) f.onclick = () => { S.done[X.id] = { at: Date.now() }; save(); confetti(); toast(X.title + ' complete'); S.view = null; S.tab = 'plan'; render(); window.scrollTo(0, 0); };
+}
+
+// ---------------- TEST
+let tint = null;
+function left(){ const total = TEST.time * 60; if (!S.tstart) return total; return Math.max(0, total - Math.floor((Date.now() - S.tstart) / 1000)); }
+function fmt(sec){ const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0') + ' left'; }
+function stageTest(box){
+  let h = '<div class="card"><h3>' + TEST.total + ' marks · ' + TEST.time + ' minutes</h3><p>' + TEST.intro + '</p><div class="row" style="align-items:center"><span class="timer" id="tm">' + fmt(left()) + '</span><button class="btn" id="tbtn">' + (S.tstart ? 'Reset timer' : 'Start timer') + '</button></div></div>';
+  let lastS = 0;
+  TEST.questions.forEach(q => {
+    if (q.s !== lastS) {
+      lastS = q.s;
+      h += '<div class="sec">Section ' + (q.s === 1 ? 'A · 25 marks' : 'B · 25 marks') + '</div>';
+      if (q.s === 1) h += '<div class="card"><h3>' + TEST.stimulus.h + '</h3>' + TEST.stimulus.p.map(x => '<p>' + x + '</p>').join('') + '</div>';
+    }
+    h += extHTML(q, 'Question ' + q.n);
+  });
+  const sc = score(TEST);
+  h += '<div class="card"><h3>Your score</h3><p>' + sc.answered + ' of ' + sc.total + ' questions marked · <b>' + sc.got + '/' + TEST.total + '</b></p>';
+  if (sc.answered === sc.total) {
+    const pct = Math.round(100 * sc.got / TEST.total);
+    h += '<div class="grade">' + grade(pct) + '</div><p>' + pct + '%. A guide using SQA’s notional boundaries (A 70%, B 60%, C 50%, D 40%). Your teacher’s test may be graded differently.</p>';
+    if (!S.done.test) h += '<button class="btn primary block" id="tfin">Record test result</button>';
+    else h += '<div class="alert good">Result recorded. Dropped marks are in Repeat Offenders: clear them before the test.</div>';
+  } else h += '<p class="small muted">Mark every question to see your grade band.</p>';
+  h += '</div>';
+  box.innerHTML = h; wire(box);
+  const f = $('#tfin'); if (f) f.onclick = () => { S.done.test = { at: Date.now() }; save(); toast('Test recorded'); render(); };
+  $('#tbtn').onclick = () => { S.tstart = S.tstart ? 0 : Date.now(); save(); render(); };
+  clearInterval(tint);
+  if (S.tstart) tint = setInterval(() => { const t = $('#tm'); if (!t) return clearInterval(tint); t.textContent = fmt(left()); }, 1000);
+}
+
+// ---------------- NIGHT
+function rulesTable(){ return '<table class="t">' + RULES.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') + '</table>'; }
+function stageRules(box){
+  let h = '<div class="card"><h3>Ten rules that earn marks</h3>' + rulesTable() + '</div>';
+  const ts = topicStats().filter(t => t.pct !== null).sort((a, b) => a.pct - b.pct);
+  if (ts.length) h += '<div class="card"><h3>Your weakest topic</h3><p><b>' + esc(ts[0].title) + '</b>: ' + ts[0].pct + '%. Re-read its Learn cards.</p><button class="btn block" id="weak">Open ' + esc(ts[0].title) + '</button></div>';
+  box.innerHTML = h;
+  if ($('#weak')) $('#weak').onclick = () => { S.stage[ts[0].id] = 0; open(ts[0].id); };
+}
+function stageChecklist(box){
+  let h = '<div class="card"><h3>Before bed</h3>' + NIGHT_LIST.map((x, i) => '<label class="check"><input type="checkbox" data-n="' + i + '"' + (S.night[i] ? ' checked' : '') + '><span>' + x + '</span></label>').join('') + '</div>';
+  if (S.done.night) h += '<div class="alert good">Done. Good luck tomorrow.</div>';
+  else h += '<button class="btn primary block" id="nfin">Finish</button>';
+  box.innerHTML = h;
+  box.querySelectorAll('[data-n]').forEach(c => c.onchange = () => { S.night[+c.dataset.n] = c.checked; save(); });
+  const f = $('#nfin'); if (f) f.onclick = () => { S.done.night = { at: Date.now() }; save(); render(); };
+}
+
+// ---------------- QUICK-FIRE
+let QF = null;
+function newRound(){ const pool = SPOTPOOL.slice(); for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; } QF = { qs: pool.slice(0, 10), i: 0, right: 0, pick: null, salt: String(Math.random()) }; }
+function renderQuick(m){
+  if (!QF) {
+    m.innerHTML = '<h1>Quick-fire</h1><p class="muted">Ten random recognition questions from all five topics. Use it for 5 minutes at the start of each session, or on the bus. Best score: <b>' + S.qfBest + '/10</b>.</p><button class="btn primary block" id="qs">Start a round</button>';
+    $('#qs').onclick = () => { newRound(); render(); };
+    return;
+  }
+  if (QF.i >= QF.qs.length) {
+    if (QF.right > S.qfBest) { S.qfBest = QF.right; save(); }
+    m.innerHTML = '<h1>Round complete</h1><div class="card" style="text-align:center"><div class="qfscore">' + QF.right + '/10</div><p class="muted">Best: ' + S.qfBest + '/10</p></div><div class="row"><button class="btn primary" id="again">Another round</button><button class="btn" id="stop">Done</button></div>';
+    $('#again').onclick = () => { newRound(); render(); };
+    $('#stop').onclick = () => { QF = null; render(); };
+    return;
+  }
+  const q = QF.qs[QF.i], ord = order(q, QF.salt), X = byId(q.sid);
+  let h = '<p class="muted small">Question ' + (QF.i + 1) + ' of 10 · ' + esc(X.title) + ' · ' + QF.right + ' right</p><div class="card"><div class="q">' + q.q + '</div><div class="opts">';
+  ord.forEach(i => { let cls = 'opt'; if (QF.pick !== null) { if (i === 0) cls += ' right'; else if (QF.pick === i) cls += ' wrong'; } h += '<button class="' + cls + '" data-i="' + i + '"' + (QF.pick !== null ? ' disabled' : '') + '>' + q.o[i] + '</button>'; });
+  h += '</div>';
+  if (QF.pick !== null) h += '<div class="why">' + (QF.pick === 0 ? '<b class="ok">Correct.</b> ' : '<b class="no">Not quite.</b> ') + q.why + '</div>';
+  h += '</div>';
+  if (QF.pick !== null) h += '<button class="btn primary block" id="nx">' + (QF.i === 9 ? 'See score' : 'Next') + '</button>';
+  m.innerHTML = h;
+  m.querySelectorAll('.opt').forEach(b => b.onclick = () => { QF.pick = +b.dataset.i; if (QF.pick === 0) QF.right++; render(); });
+  if ($('#nx')) $('#nx').onclick = () => { QF.i++; QF.pick = null; render(); window.scrollTo(0, 0); };
+}
+
+// ---------------- OFFENDERS
+function offList(el){
+  const offs = offenders();
+  if (!offs.length) { el.innerHTML = '<div class="alert good">No Repeat Offenders. Everything you have tried is at full marks.</div>'; return; }
+  let h = '';
+  offs.forEach(q => {
+    const a = S.ans[q.id], X = byId(q.sid);
+    const where = q.kind === 'test' ? 'Practice test Q' + q.n : X.title + ' · ' + ({ spot: 'Spot it', mark: 'Mark it', exam: 'Exam', boss: 'Boss question' })[q.kind];
+    h += '<div class="card"><div class="small muted">' + esc(where) + ' · you scored ' + a.got + '/' + a.max + '</div><div class="q">' + q.q + '</div>';
+    h += '<div class="box full"><b>Full-marks answer:</b> ' + (q.t === 'mcq' ? q.o[0] + '<br><span class="small">' + q.why + '</span>' : q.t === 'mark' ? '“' + q.a + '” gets ' + q.m + '/' + q.max + '. ' + q.why : q.model) + '</div>';
+    h += '<button class="btn block" data-retry="' + q.id + '">Retry this question</button></div>';
+  });
+  el.innerHTML = h;
+  el.querySelectorAll('[data-retry]').forEach(b => b.onclick = () => {
+    const q = QIDX[b.dataset.retry]; delete S.ans[q.id]; delete S.open[q.id]; delete S.texts[q.id];
+    S.stage[q.sid] = q.kind === 'test' ? 0 : ({ spot: 2, mark: 3, exam: 4, boss: 4 })[q.kind];
+    save(); open(q.sid);
+    setTimeout(() => { const c = document.getElementById('c-' + q.id); if (c) c.scrollIntoView({ block: 'start' }); }, 50);
+  });
+}
+function renderOffenders(m){
+  m.innerHTML = '<h1>Repeat Offenders</h1><p class="muted small">Every question you drop a mark on lands here. Retry it: full marks clears it. Aim to have this empty before the test.</p><div id="offl"></div>';
+  offList($('#offl'));
+}
+
+// ---------------- PROGRESS
+function bars(rows){ return '<div class="bars">' + rows.map(r => '<div class="b"><span class="lab">' + esc(r.lab) + '</span><span class="val">' + r.v + '</span><div class="track"><div class="fill" style="width:' + Math.max(0, Math.min(100, r.pct)) + '%"></div></div></div>').join('') + '</div>'; }
+function renderProgress(m){
+  const done = SESSIONS.filter(X => S.done[X.id]).length, ts = topicStats(), tsc = score(TEST);
+  let h = '<h1>Progress</h1><div class="stat"><div class="card"><div class="v">' + done + '<span class="small muted">/5</span></div><div class="l">topics done</div></div><div class="card"><div class="v">' + (S.done.test ? Math.round(100 * tsc.got / TEST.total) + '%' : '–') + '</div><div class="l">practice test</div></div><div class="card"><div class="v">' + offenders().length + '</div><div class="l">offenders</div></div></div>';
+  h += '<h2>Topics</h2><div class="card">' + bars(ts.map(t => ({ lab: t.title, v: t.pct === null ? '–' : t.pct + '%', pct: t.pct || 0 }))) + '<p class="small muted" style="margin-top:8px">Includes practice-test marks for each topic. Aim for 70%+ in every topic.</p></div>';
+  if (S.done.test) h += '<h2>Practice test</h2><div class="card"><p><b>' + tsc.got + '/' + TEST.total + '</b> · grade ' + grade(Math.round(100 * tsc.got / TEST.total)) + '</p></div>';
+  h += '<h2>Ten rules</h2><div class="card">' + rulesTable() + '</div>';
+  m.innerHTML = h;
+}
+
+// ---------------- SETTINGS
+$('#setBtn').onclick = () => {
+  const d = $('#settings');
+  d.innerHTML = '<h3>Settings</h3><label class="f" for="td">Test date</label><input type="date" id="td" value="' + S.testDate + '"><label class="f" for="th">Theme</label><select id="th"><option value="auto">Follow device</option><option value="light">Light</option><option value="dark">Dark</option></select><p class="small muted" style="margin-top:14px">Progress is saved in this browser on this device only.</p><div class="row" style="margin-top:14px"><button class="btn" id="rst">Reset progress</button><button class="btn primary" id="cls">Done</button></div>';
+  $('#th').value = S.theme;
+  $('#td').onchange = e => { S.testDate = e.target.value; save(); render(); };
+  $('#th').onchange = e => { S.theme = e.target.value; applyTheme(); save(); };
+  $('#rst').onclick = () => { if (confirm('Delete all progress and answers on this device?')) { const t = S.testDate, th = S.theme; S = blank(); S.testDate = t; S.theme = th; save(); d.close(); render(); toast('Progress reset'); } };
+  $('#cls').onclick = () => d.close();
+  if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+};
+
+render();
+})();
+</script>
+</body>
+</html>
